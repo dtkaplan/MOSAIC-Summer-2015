@@ -1,0 +1,32 @@
+## Project Description
+
+The purpose of Project MOSAIC (NSF DUE-0920350) is to help unify instruction in statistics and calculus, integrating them with modeling and computation.
+
+The work in Summer 2015 has two main objectives:
+
+1. Design and develop error handlers and graphical user interfaces that will help students construct correct commands, warn them when they are not, and suggest changes.
+2. Work with faculty from the ACM data-science group and the Consortium for Visualization and Computation to put their research case studies in a form that can readily be used by students. This will include participation in the CVC meeting at Smith College in mid-July, and pre-meeting planning with participants and post-meeting follow-up with them.
+
+Technologies that will be used include R, Shiny, GitHub, RMarkdown, and data-science packages such as `dplyr` and `ggplot2`.
+
+## Topics
+
+### A shiny graphics constructor
+
+There's some elements at 
+
+* <https://github.com/yindeng/shinyData>
+* <http://www.showmeshiny.com/visualizing-ggplot2/>
+* <http://www.showmeshiny.com/ggplot-live/>
+* <http://www.showmeshiny.com/ggplot2-theme-builder/>
+* <http://www.showmeshiny.com/r-graph-catalog/>
+* <https://winston.shinyapps.io/activity-dashboard/>
+* <http://www.stat.ucla.edu/~jeroen/ggplot2/>
+* shinythemes package?
+
+[Shiny layout guide](http://shiny.rstudio.com/articles/layout-guide.html)
+
+### Interact with a database.
+
+### mosaicManip translation
+
