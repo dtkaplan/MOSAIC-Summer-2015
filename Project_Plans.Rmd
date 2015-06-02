@@ -1,5 +1,7 @@
 ## Project Description
 
+Hello
+
 The purpose of Project MOSAIC (NSF DUE-0920350) is to help unify instruction in statistics and calculus, integrating them with modeling and computation.
 
 The work in Summer 2015 has two main objectives:
