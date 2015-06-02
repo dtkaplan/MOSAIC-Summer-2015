@@ -13,9 +13,10 @@ The summer's work should familiarize the students with core elements of data sci
 
 ### A shiny graphics constructor
 
-There's some elements at 
+A good starting point might be <https://roose.shinyapps.io/shinyData/>, with a GitHub repository at <https://github.com/yindeng/shinyData>
 
-* <https://github.com/yindeng/shinyData>
+Other ideas: 
+
 * <http://www.showmeshiny.com/visualizing-ggplot2/>
 * <http://www.showmeshiny.com/ggplot-live/>
 * <http://www.showmeshiny.com/ggplot2-theme-builder/>
@@ -30,3 +31,18 @@ There's some elements at
 
 ### mosaicManip translation
 
+Objective: Create an R package with the `mosaicManip` apps in Shiny format.
+
+* Do the basic translation.
+* See if there is a unified control layout paradigm that we can apply to many apps. If we can have a common theme to the layout, things will go much more easily for the user.
+* Write a control function that invokes individual apps, e.g.,
+    `mosaicApp("trajectory")`
+
+The existing software is in `mosaicApps`.
+
+* `mosaicManipOriginal` were written with the `manipulate` system.
+* `mosaicManipShiny` were written with Shiny.
+
+Leave these directories exactly as they are.  Copy out files to create new .R files
+
+The plotting parts of each program are usually the most intricate.  Those can be lifted straight into the new files, then modified if and when needed.
