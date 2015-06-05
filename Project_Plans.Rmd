@@ -1,7 +1,5 @@
 ## Project Description
 
-Hello
-
 The purpose of Project MOSAIC (NSF DUE-0920350) is to help unify instruction in statistics and calculus, integrating them with modeling and computation.
 
 The work in Summer 2015 has two main objectives:
@@ -28,6 +26,10 @@ Other ideas:
 * shinythemes package?
 
 [Shiny layout guide](http://shiny.rstudio.com/articles/layout-guide.html)
+
+## Swirl interactive lessons
+
+Anything good here?  <https://github.com/swirldev/swirl_courses/tree/master/Getting_and_Cleaning_Data/Manipulating_Data_with_dplyr>
 
 ### Interact with a database.
 
