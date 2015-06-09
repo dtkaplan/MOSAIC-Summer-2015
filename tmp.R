@@ -19,6 +19,7 @@ runApp(
                             ),
                             actionButton("plot","Plot"),
                             actionButton("reset","Reset"),
+#                             geom_list(),
                             conditionalPanel(
                               condition = "input.geoms == 1",
                               selectizeInput("x","Var X", choices = list(1,2,3)),
