@@ -12,39 +12,49 @@ runApp(
       function(input, output, session) {
         
         make_layer <- function(){
-         layer <- tabPanel("layer n",
-                   wellPanel(selectizeInput("geoms", "Geoms", 
-                                          choices = list("geom_text" = 1, "geom_line" = 2, "geom_point" = 3)
-                   ),
-                   actionButton("plot","Plot"),
-                   actionButton("reset","Reset"),
-                    geom_list()
-                   )                   
-                   
-          )
-         
-        
+          layer <- tabPanel("layer n",
+                            wellPanel(selectizeInput("geoms", "Geoms", 
+                                                     choices = list("geom_text" = 1, "geom_line" = 2, "geom_point" = 3)
+                            ),
+                            actionButton("plot","Plot"),
+                            actionButton("reset","Reset"),
+                            conditionalPanel(
+                              condition = "input.geoms == 1",
+                              selectizeInput("x","Var X", choices = list(1,2,3)),
+                              selectizeInput("y","Var Y", choices = list(1,2,3))
+                            ) 
+                            )    
+                            
+                              
+          )       
+          
           return (layer)
         }  
         
         
-        geom_list <- reactive({
-          if (input$geoms == NULL) {
-            print("Please choose a geom")
-          }
-          else {
-            selectizeInput("x","Var X")
-            selectizeInput("y","Var Y")
-            selectizeInput("col","Choose Colors")
-          }          
-        })
+#         geom_list <- reactive({
+#           if (input$geoms == NULL) {
+#             print("Please choose a geom")
+#           }
+#           else {
+# selectizeInput("x","Var X", choices = list(1,2,3)),
+# selectizeInput("y","Var Y", choices = list(1,2,3))
+#             selectizeInput("col","Choose Colors")
+#           }          
+#         })
         
         output$ui <- renderUI({
-          if (input$show_layer_1 ) { 
+          if (input$show_layer_1 || input$show_layer_2) { 
             make_layer()
-            
+          
           }
-        })           
+        })
+        
+      
+
+
+
+
       }),
     
     ui = shinyUI(
@@ -52,9 +62,10 @@ runApp(
         "Project Mosaic!!!",      
         column(2, 
                checkboxInput("show_layer_1", "Display Layer 1", value=FALSE),
-               checkboxInput("show_layer_2", "Display Layer 2", value=FALSE),
-               uiOutput("ui")), 
-        column(10, textOutput("table") )
+               checkboxInput("show_layer_2", "Display Layer 2", value=FALSE)
+               ), 
+        column(4, uiOutput("ui")),
+        column(6, textOutput("Here is the plot Output"))
       )
     )
     
