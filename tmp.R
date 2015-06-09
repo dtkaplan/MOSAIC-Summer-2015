@@ -7,7 +7,7 @@ library(mosaic)
 # datasets <- list( Galton = Galton, Heightweight = Heightweight,
 #                   SwimRecords = SwimRecords, TenMileRace = TenMileRace)
 
-runApp(  
+runApp(
   list(
     server = shinyServer(
       function(input, output, session) {
