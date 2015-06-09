@@ -18,7 +18,7 @@ runApp(
                    ),
                    actionButton("plot","Plot"),
                    actionButton("reset","Reset"),
-                    geom_list()
+                     geom_list()
                    )                   
                    
           )
