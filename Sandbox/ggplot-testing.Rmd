@@ -1,0 +1,74 @@
+---
+title: "Notes on ggplot app"
+author: "Danny Kaplan"
+date: "June 10, 2015"
+output: html_document
+runtime: shiny
+---
+
+```{r include=FALSE}
+library(ggplot2)
+library(mosaicData)
+```
+
+Set up the reactive state.  When these change, the plot should change automatically. Note: they are assigned globally.
+```{r}
+layer_1_values <<- 
+  reactiveValues(
+    data = KidsFeet, 
+    geom = "geom_point",
+    mappings = list(x="length", y="width", shape="sex", color=NULL), 
+    settings = list(color="red", size=4) # any that are mapped must be absent.
+  ) 
+layer_2_values <<-
+  reactiveValues(
+    data = KidsFeet,
+    geom = "geom_text",
+    mappings = list(x="length", y="width", label="name", color="sex"),
+    settings = list(size = 4)
+  )
+```
+
+```{r}
+inputPanel(
+  selectInput("shape", "Map shape to:", 
+              choices = names(KidsFeet)),
+  selectInput("color", "Set color to:",
+              choices = list("red", "blue", "green"))
+)
+```
+
+```{r}
+observe({
+  layer_1_values$mappings$shape <<- input$shape
+})
+observe({
+  layer_1_values$settings$color <<- input$color
+})
+```
+  
+```{r}
+make_geom_argument_list <- function(values) {
+  non_null_mappings <- 
+    values$mappings[!unlist(lapply(values$mappings,FUN=is.null))]
+  non_null_settings <-
+    values$settings[!unlist(lapply(values$settings,FUN=is.null))]
+  # make sure there's no overlap
+  not_in_mappings <- setdiff(names(non_null_settings), names(non_null_mappings))
+  arg_list <- non_null_settings[not_in_mappings]
+  arg_list$mapping <- do.call(aes_string, non_null_mappings)
+  
+  arg_list
+}
+```
+
+```{r out.width="50%"}
+renderPlot({
+  ggplot(data=layer_1_values$data) +  
+       do.call(layer_1_values$geom, 
+               make_geom_argument_list(layer_1_values)) +
+       do.call(layer_2_values$geom, 
+               make_geom_argument_list(layer_2_values))
+})
+```
+
