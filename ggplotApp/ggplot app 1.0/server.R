@@ -5,6 +5,7 @@ library(mosaicData)
 source("layer.R")
 source("frame.R")
 
+# CHANGE THIS logic to pull from any of a list of packages.
 datasets <- list( Galton = Galton, Heightweight = Heightweight,
                  SwimRecords = SwimRecords, TenMileRace = TenMileRace)
 
@@ -16,9 +17,29 @@ new_aes_table_helper <- function(new_aes_names, old_aes_df) {
   dplyr::left_join(new_df, old_aes_df, by="aes")
 }
 
+# ============== Server and Observers ============
 shinyServer(function(input,output,session){
   
   source("data.R", local=TRUE)
+  
+  
+  get_uploaded_data <- reactive({
+    if (is.null(input$data_own)) {
+      # User has not uploaded a file yet
+      Dataset <- data.frame()
+    } else {
+      Dataset <- read.csv(input$data_own$datapath, #data.table::fread(), readr::readr()
+                          stringsAsFactors=FALSE)
+    }
+    
+    Dataset
+  })
+  
+  data_name <- reactive({
+    input$data
+    # CHANGE NEEDED
+    # This needs to be changed to get the name of the csv file, if that's how data were loaded.
+  })
   
   #provides the currently specified data table
   this_dataset <- reactive({
@@ -40,16 +61,15 @@ shinyServer(function(input,output,session){
   output$disp_aes_1 <- renderTable(layer_1_values$aes)
   
   observe({ # put the data into frame_def$data
-    data_name <- input$data_source
-    do.call(data, list(data_name, package="mosaicData") )
-    frame_def$data <<- eval(parse(text=data_name))
+    data_name <- data_name()
+    frame_def$data <<- this_dataset()
     frame_def$data_name <<- data_name
     updateSelectInput(session, "frame_x", choices=names(frame_def$data))
     updateSelectInput(session, "frame_y", choices=names(frame_def$data))
   })
   
   observe({
-    input$data_source # for dependencies
+    this_dataset() # for the dependency if data changes
     frame_def$x <<- input$frame_x
     frame_def$y <<- input$frame_y
   })

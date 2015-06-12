@@ -21,23 +21,8 @@ library("shiny")
 #   condition = "input.show_layer_5 == true",
 #   tabPanel("l5", "Layer 5")))
 
-geom_aesthetics <- list(
-  geom_line  = list(x="any", y="any", 
-                    color = "few", size="num_or_few", type="few",
-                    group = "few"),
-  geom_point = list(x="any", y="any", 
-                    color="num_or_few", size ="num_or_few", alpha="num_or_few"),
-  geom_bar   = list(x="any", y="any", color = "few", position = "bar_positions"),
-  geom_blank = list(x="any", y="any")
-)
-
 layer_tab <- tabPanel(
   "Layer",
-  #                        layer_1_cond,
-  #                        layer_2_cond,
-  #                        layer_3_cond,
-  #                        layer_4_cond,
-  #                        layer_5_cond
   tabsetPanel(
     tabPanel("Layer 1",
              column(4, 
@@ -56,14 +41,23 @@ layer_tab <- tabPanel(
                       
                       wellPanel(
                         textInput("set_val_1","Set aesthetic, e.g. color = 'red'"),
-                        actionButton("do_set_1", "Set it!")
-                        
+                        actionButton("do_set_1", "Set it!")  
+                      ),
+                      
+                      wellPanel(
+                        tableOutput("disp_aes_1")
                       )
                     )),
              
              column(8, 
                     wellPanel("This is where the plot is")
              )),
+    
+    #                        layer_1_cond,
+    #                        layer_2_cond,
+    #                        layer_3_cond,
+    #                        layer_4_cond,
+    #                        layer_5_cond
     
     tabPanel("Layer 2"
     ),
