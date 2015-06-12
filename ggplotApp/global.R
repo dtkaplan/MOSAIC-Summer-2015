@@ -30,6 +30,10 @@ frame_def <<- reactiveValues(
 )
 
 # Storage for layers
+
+# Turn this into a function   DO THIS !!
+
+# The three layer_n_values are IDENTICAL except for layer component
 layer_1_values <<- 
   reactiveValues(
     layer = 1,
@@ -50,6 +54,17 @@ layer_2_values <<-
                      role=rep("variable",2), 
                      stringsAsFactors=FALSE)
     )
+
+layer_3_values <<-
+  reactiveValues(
+    layer = 3,
+    data = NULL,
+    geom = "geom_text",
+    aes = data.frame(aes=c("x","y"), 
+                     value=c("x","y"), 
+                     role=rep("variable",2), 
+                     stringsAsFactors=FALSE)
+  )
 
 # Helper functions
 

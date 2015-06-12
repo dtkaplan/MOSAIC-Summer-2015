@@ -1,25 +1,9 @@
 library("shiny")
 
-# layer_1_cond <- tabPanel(conditionalPanel(
-#   condition = "input.show_layer_1 == true",
-#   "Layer 1"), plotOutput("l1_plot")
-#   )
-# 
-# layer_2_cond <- tabPanel(conditionalPanel(
-#   condition = "input.show_layer_2 == true",
-#   tabPanel("l2", "Layer 2"))) 
-# 
-# layer_3_cond <- tabPanel(conditionalPanel(
-#   condition = "input.show_layer_3 == true",
-#   tabPanel("l3","Layer 3")))
-# 
-# layer_4_cond <- tabPanel(conditionalPanel(
-#   condition = "input.show_layer_4 == true",
-#   tabPanel("l4", "Layer 4")))
-# 
-# layer_5_cond <- tabPanel(conditionalPanel(
-#   condition = "input.show_layer_5 == true",
-#   tabPanel("l5", "Layer 5")))
+make_layer <- function(n=1) {
+  
+  
+}
 
 layer_tab <- tabPanel(
   "Layer",
@@ -53,12 +37,6 @@ layer_tab <- tabPanel(
                       tableOutput("disp_aes_1")
                     )
              )),
-    
-    #                        layer_1_cond,
-    #                        layer_2_cond,
-    #                        layer_3_cond,
-    #                        layer_4_cond,
-    #                        layer_5_cond
     
     tabPanel("Layer 2"
     ),

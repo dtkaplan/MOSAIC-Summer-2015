@@ -117,6 +117,14 @@ shinyServer(function(input, output, session) {
     }
  })
   
+# ==== SAME STUFF BUT DUPLICATED FOR LAYER 2
+
+
+# ==== When that works, then add in Layer 3
+  
+  
+  
+  
   
   
   # ===================================
@@ -127,6 +135,8 @@ shinyServer(function(input, output, session) {
   
   
   output$disp_aes_1 <- renderTable(layer_1_values$aes)
+  output$disp_aes_2 <- renderTable(layer_2_values$aes)
+  output$disp_aes_3 <- renderTable(layer_3_values$aes)
   
   observe({ # put the data into frame_def$data
     data_name <- data_name()
@@ -139,6 +149,16 @@ shinyServer(function(input, output, session) {
   layer_1_glyphs <- reactive({
     args <- make_geom_argument_list(layer_1_values$aes)
     do.call(layer_1_values$geom, args)
+  })
+  
+  layer_2_glyphs <- reactive({
+    args <- make_geom_argument_list(layer_2_values$aes)
+    do.call(layer_2_values$geom, args)
+  })
+  
+  layer_3_glyphs <- reactive({
+    args <- make_geom_argument_list(layer_3_values$aes)
+    do.call(layer_3_values$geom, args)
   })
  
   frame_for_plot <- reactive({
@@ -155,6 +175,9 @@ shinyServer(function(input, output, session) {
       P <- P + geom_blank()
     if( input$show_layer_1 ) 
       P <- P + layer_1_glyphs()
+    if( input$show_layer_2 )
+      P <- P + layer_2_glyps()
+    # and similarly for layer 3
     
     P
   })
