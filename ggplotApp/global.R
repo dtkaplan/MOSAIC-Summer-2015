@@ -2,6 +2,12 @@
 
 library(mosaicData)
 
+# Available datasets
+# CHANGE THIS logic to pull from any of a list of packages.
+datasets <- list( Galton = mosaicData::Galton, Heightweight = mosaicData::Heightweight,
+                  SwimRecords = mosaicData::SwimRecords, TenMileRace = TenMileRace)
+
+
 geom_aesthetics <- list(
   geom_line  = list(x="any", y="any", 
                     color = "few", size="num_or_few", type="few",
@@ -69,4 +75,10 @@ make_geom_argument_list <- function(values) {
   res
 }
 
+
+
+new_aes_table_helper <- function(new_aes_names, old_aes_df) {
+  new_df <- data.frame(aes=new_aes_names, stringsAsFactors=FALSE)
+  dplyr::left_join(new_df, old_aes_df, by="aes")
+}
 

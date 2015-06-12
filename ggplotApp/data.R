@@ -3,7 +3,7 @@ library(mosaic)
 
 
 choose_data_source <- radioButtons(
-  "file_or_package", 
+  inputId="file_or_package", 
   label = NULL,
   choices = list("Choose Datasets" = 1, "Upload Datasets" = 2), 
   selected = 1)
@@ -11,10 +11,9 @@ choose_data_source <- radioButtons(
 condition1 <- 
   conditionalPanel(
     condition = "input.file_or_package == 1",
-    selectizeInput("data", label = "Choose Dataset", 
-                   choices = list( "Galton", "Heightweight",
-                                   "SwimRecords", "TenMileRace"
-                   )
+    selectInput("package_data_name", 
+                label = "Choose Dataset", 
+                choices = names(datasets)
     )
   )
 

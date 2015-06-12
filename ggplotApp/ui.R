@@ -18,7 +18,8 @@ shinyUI(
                          
                          frame_tab,
                          
-                         layer_tab)
+                         layer_tab
+                        )
                        
               )                 
   )

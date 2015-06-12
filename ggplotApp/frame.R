@@ -9,12 +9,12 @@ frame_tab <- tabPanel(
          wellPanel(
            selectInput(
              "frame_x", "X variable:",
-             "Bogus_x"
+             list("bogus x")
            ),
            
            selectInput(
              "frame_y", "Y variable:",
-             "Bogus_y"
+             list("bogus y")
            ),
            wellPanel(
              checkboxInput("show_layer_1", "Display Layer 1", value=FALSE),
@@ -24,7 +24,7 @@ frame_tab <- tabPanel(
          )),
   column(8,
          wellPanel(
-                   plotOutput(id="frame_plot")           
+                   plotOutput(outputId="frame_plot")           
          ))
 )
 

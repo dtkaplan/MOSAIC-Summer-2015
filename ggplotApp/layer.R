@@ -30,7 +30,6 @@ layer_tab <- tabPanel(
                       selectInput("geom1", "Geom for this layer:",
                                   choices = c(names(geom_aesthetics)),
                                   selected = "geom_blank"),
-                      tableOutput("disp_aes_1"),
                       
                       wellPanel(
                         selectInput("map1", "Map aesthetic:", 
@@ -42,15 +41,17 @@ layer_tab <- tabPanel(
                       wellPanel(
                         textInput("set_val_1","Set aesthetic, e.g. color = 'red'"),
                         actionButton("do_set_1", "Set it!")  
-                      ),
-                      
-                      wellPanel(
-                        tableOutput("disp_aes_1")
                       )
                     )),
              
              column(8, 
-                    wellPanel("This is where the plot is")
+                    wellPanel(
+                      plotOutput("layer_1_plot")
+                    ),
+                    
+                    wellPanel(
+                      tableOutput("disp_aes_1")
+                    )
              )),
     
     #                        layer_1_cond,
