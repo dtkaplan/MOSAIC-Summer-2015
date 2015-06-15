@@ -9,7 +9,9 @@ library(mosaicData)
 
 # JUST FOR DEBUGGING
 shinyServer(function(input, output, session) {
-  
+  layer_1_values <- layer_n_values(1)
+  layer_2_values <- layer_n_values(2)
+  layer_3_values <- layer_n_values(3)
   # ===============================
   # Data reading reactives
   #
@@ -299,7 +301,7 @@ shinyServer(function(input, output, session) {
       P <- P + layer_2_glyphs()
     if( input$show_layer_3 )
       P <- P + layer_3_glyphs()
-    # and similarly for layer 3
+
     
     P
   })

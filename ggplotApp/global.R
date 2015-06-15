@@ -9,12 +9,18 @@ datasets <- list( Galton = mosaicData::Galton, Heightweight = mosaicData::Height
 
 
 geom_aesthetics <- list(
-  geom_line  = list(x="any", y="any", 
-                    color = "few", size="num_or_few", type="few",
-                    group = "few"),
-  geom_point = list(x="any", y="any", 
-                    color="num_or_few", size ="num_or_few", alpha="num_or_few"),
-  geom_bar   = list(x="any", y="any", color = "few", position = "bar_positions"),
+  geom_line  = list(x = "any", y = "any", color = "few", alpha = "num",
+                    size="num_or_few", linetype="few"),
+  geom_point = list(x = "any", y = "any", color="num_or_few", size ="num_or_few", 
+                    alpha="num_or_few", fill = "few", shape = "few"),
+  geom_bar   = list(x = "any", color = "few", alpha="num_or_few", fill = "few",
+                    linetype="few", size ="num_or_few", weight = "num_or_few"),
+  geom_hline = list(alpha="num_or_few", color="num_or_few",
+                    linetype="few",size="num_or_few"),
+  geom_vline = list(alpha="num_or_few", color="num_or_few",
+                    linetype="few",size="num_or_few"),
+  geom_smooth = list(x = "any", y = "any", color = "few", alpha = "num",
+                     size="num_or_few", linetype="few", fill = "few", weight = "num_or_few"),
   geom_blank = list(x="any", y="any")
 )
 
@@ -34,30 +40,44 @@ frame_def <<- reactiveValues(
 # Turn this into a function   DO THIS !!
 
 # The three layer_n_values are IDENTICAL except for layer component
-layer_1_values <<- 
-  reactiveValues(
-    layer = 1,
-    data = NULL, 
-    geom = "geom_point",
-    aes = data.frame(aes=c("x","y"), 
-                     value=c("x","y"), 
-                     role=rep("variable",2), 
-                     stringsAsFactors=FALSE)
-  ) 
-layer_2_values <<-
-  reactiveValues(
-    layer = 2,
-    data = NULL,
-    geom = "geom_text",
-    aes = data.frame(aes=c("x","y"), 
-                     value=c("x","y"), 
-                     role=rep("variable",2), 
-                     stringsAsFactors=FALSE)
-    )
+# layer_1_values <<- 
+#   reactiveValues(
+#     layer = 1,
+#     data = NULL, 
+#     geom = "geom_point",
+#     aes = data.frame(aes=c("x","y"), 
+#                      value=c("x","y"), 
+#                      role=rep("variable",2), 
+#                      stringsAsFactors=FALSE)
+#   ) 
+# layer_2_values <<-
+#   reactiveValues(
+#     layer = 2,
+#     data = NULL,
+#     geom = "geom_text",
+#     aes = data.frame(aes=c("x","y"), 
+#                      value=c("x","y"), 
+#                      role=rep("variable",2), 
+#                      stringsAsFactors=FALSE)
+#     )
+# 
+# layer_3_values <<-
+#   reactiveValues(
+#     layer = 3,
+#     data = NULL,
+#     geom = "geom_text",
+#     aes = data.frame(aes=c("x","y"), 
+#                      value=c("x","y"), 
+#                      role=rep("variable",2), 
+#                      stringsAsFactors=FALSE)
+#   )
 
-layer_3_values <<-
+# Helper functions
+
+layer_n_values <<- function(n){
+  
   reactiveValues(
-    layer = 3,
+    layer = n,
     data = NULL,
     geom = "geom_text",
     aes = data.frame(aes=c("x","y"), 
@@ -65,8 +85,9 @@ layer_3_values <<-
                      role=rep("variable",2), 
                      stringsAsFactors=FALSE)
   )
+  
+}
 
-# Helper functions
 
 # Turn the layer values into something suited to do.call() in making plot.
 make_geom_argument_list <- function(values) {
