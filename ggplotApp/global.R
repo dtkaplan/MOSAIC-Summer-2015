@@ -5,7 +5,7 @@ library(mosaicData)
 # Available datasets
 # CHANGE THIS logic to pull from any of a list of packages.
 datasets <- list( Galton = mosaicData::Galton, Heightweight = mosaicData::Heightweight,
-                  SwimRecords = mosaicData::SwimRecords, TenMileRace = TenMileRace)
+                  SwimRecords = mosaicData::SwimRecords, TenMileRace = mosaicData::TenMileRace)
 
 
 geom_aesthetics <- list(
@@ -34,30 +34,42 @@ frame_def <<- reactiveValues(
 # Turn this into a function   DO THIS !!
 
 # The three layer_n_values are IDENTICAL except for layer component
-layer_1_values <<- 
-  reactiveValues(
-    layer = 1,
-    data = NULL, 
-    geom = "geom_point",
-    aes = data.frame(aes=c("x","y"), 
-                     value=c("x","y"), 
-                     role=rep("variable",2), 
-                     stringsAsFactors=FALSE)
-  ) 
-layer_2_values <<-
-  reactiveValues(
-    layer = 2,
-    data = NULL,
-    geom = "geom_text",
-    aes = data.frame(aes=c("x","y"), 
-                     value=c("x","y"), 
-                     role=rep("variable",2), 
-                     stringsAsFactors=FALSE)
-    )
+# layer_1_values <<- 
+#   reactiveValues(
+#     layer = 1,
+#     data = NULL, 
+#     geom = "geom_point",
+#     aes = data.frame(aes=c("x","y"), 
+#                      value=c("x","y"), 
+#                      role=rep("variable",2), 
+#                      stringsAsFactors=FALSE)
+#   ) 
+# layer_2_values <<-
+#   reactiveValues(
+#     layer = 2,
+#     data = NULL,
+#     geom = "geom_text",
+#     aes = data.frame(aes=c("x","y"), 
+#                      value=c("x","y"), 
+#                      role=rep("variable",2), 
+#                      stringsAsFactors=FALSE)
+#     )
+# 
+# layer_3_values <<-
+#   reactiveValues(
+#     layer = 3,
+#     data = NULL,
+#     geom = "geom_text",
+#     aes = data.frame(aes=c("x","y"), 
+#                      value=c("x","y"), 
+#                      role=rep("variable",2), 
+#                      stringsAsFactors=FALSE)
+#   )
 
-layer_3_values <<-
+layer_n_values <<- function(n){
+  
   reactiveValues(
-    layer = 3,
+    layer = n,
     data = NULL,
     geom = "geom_text",
     aes = data.frame(aes=c("x","y"), 
@@ -65,6 +77,9 @@ layer_3_values <<-
                      role=rep("variable",2), 
                      stringsAsFactors=FALSE)
   )
+
+}
+
 
 # Helper functions
 
@@ -89,7 +104,6 @@ make_geom_argument_list <- function(values) {
   
   res
 }
-
 
 
 new_aes_table_helper <- function(new_aes_names, old_aes_df) {

@@ -40,6 +40,8 @@ shinyServer(function(input, output, session) {
   
   data_name <- reactive({
     input$package_data_name
+    
+#     input$data_own$name   #The filename provided by the web browser 
     # CHANGE NEEDED
     # This needs to be changed to get the name of the csv file, if that's how data were loaded.
   })
@@ -57,9 +59,19 @@ shinyServer(function(input, output, session) {
   observe({ # the geom has been set or changed
     if(frame_def$x != "bogus x") {
       # remember, assignment is <<- for assignment at higher level
-      layer_1_values$geom <<- input$geom1 
+      
+      
+      layer_n_geom(1)$geom <<- input$geom1
+      
+#      layer_1_geom <- layer_n_values(1) 
+#      layer_1_geom$geom <<- input$geom1
+#     '[<-' (layer_n_values(1), geom, input$geom1)
+    
+#       layer_1_geom <- layer_n_values(1)
+#       assign(layer_1_geom$geom, input$geom1) 
+
       # pull in the old values
-      old <- layer_1_values$aes
+      old <- layer_n_values(1)$aes
       
       # keep those that are appropriate for new
       relevant <- geom_aesthetics[[input$geom1]]
@@ -70,8 +82,8 @@ shinyServer(function(input, output, session) {
       updateSelectInput(session, inputId="map1",
                         choices = names(relevant))
       # Get names from frame data or, if it's set, layer data
-      variable_names <- if (is.null(layer_1_values$data)) names(frame_def$data)
-      else names(layer_1_values$data)
+      variable_names <- if (is.null(layer_n_values(1)$data)) names(frame_def$data)
+      else names(layer_n_values(1)$data)
       # Set the x and y aesthetics if they haven't already been set.
       x_ind <- which(new_aes_table$aes == 'x')
       y_ind <- which(new_aes_table$aes == 'y')
@@ -85,16 +97,18 @@ shinyServer(function(input, output, session) {
                                     "none of them"))
       updateSelectInput(session, inputId="set1",
                         choices = names(relevant))
-      layer_1_values$aes <<- new_aes_table
+      layer_1_aes <- layer_n_values(1)$aes
+      assign(layer_1_aes, new_aes_table) 
+#       layer_n_values(1)$aes <<- new_aes_table
     }
   })
   
   # These will need to be replicated for each layer  
   observeEvent(input$do_map_1, {
-    ind <- which(input$map1 == layer_1_values$aes$aes)
-    layer_1_values$aes$value[ind] <<- 
+    ind <- which(input$map1 == layer_n_values(1)$aes$aes)
+    layer_n_values(1)$aes$value[ind] <<- 
       ifelse("none of them" == input$var1, "", input$var1)
-    layer_1_values$aes$role[ind]  <<- 
+    layer_n_values(1)$aes$role[ind]  <<- 
       ifelse("none of them" == input$var1, "", "variable")
   }) 
   
@@ -110,10 +124,10 @@ shinyServer(function(input, output, session) {
     value <- gsub("^.+=","",S)
     num_value <- as.numeric(value)
     if( ! is.na(num_value)) value <- num_value
-    ind <- which(aes_name == layer_1_values$aes$aes)
+    ind <- which(aes_name == layer_n_values(1)$aes$aes)
     if( length(ind) == 1 ) {
-      layer_1_values$aes$value[ind] <<- value
-      layer_1_values$aes$role[ind]  <<- "constant"
+      layer_n_values(1)$aes$value[ind] <<- value
+      layer_n_values(1)$aes$role[ind]  <<- "constant"
     }
  })
   
@@ -134,9 +148,9 @@ shinyServer(function(input, output, session) {
   output$table <- renderDataTable({ this_dataset() })
   
   
-  output$disp_aes_1 <- renderTable(layer_1_values$aes)
-  output$disp_aes_2 <- renderTable(layer_2_values$aes)
-  output$disp_aes_3 <- renderTable(layer_3_values$aes)
+  output$disp_aes_1 <- renderTable(layer_n_values(1)$aes)
+  output$disp_aes_2 <- renderTable(layer_n_values(2)$aes)
+  output$disp_aes_3 <- renderTable(layer_n_values(3)$aes)
   
   observe({ # put the data into frame_def$data
     data_name <- data_name()
@@ -147,18 +161,18 @@ shinyServer(function(input, output, session) {
   })
   
   layer_1_glyphs <- reactive({
-    args <- make_geom_argument_list(layer_1_values$aes)
-    do.call(layer_1_values$geom, args)
+    args <- make_geom_argument_list(layer_n_values(1)$aes)
+    do.call(layer_n_values(1)$geom, args)
   })
   
   layer_2_glyphs <- reactive({
-    args <- make_geom_argument_list(layer_2_values$aes)
-    do.call(layer_2_values$geom, args)
+    args <- make_geom_argument_list(layer_n_values(2)$aes)
+    do.call(layer_n_values(2)$geom, args)
   })
   
   layer_3_glyphs <- reactive({
-    args <- make_geom_argument_list(layer_3_values$aes)
-    do.call(layer_3_values$geom, args)
+    args <- make_geom_argument_list(layer_n_values(3)$aes)
+    do.call(layer_n_values(3)$geom, args)
   })
  
   frame_for_plot <- reactive({
@@ -185,6 +199,8 @@ shinyServer(function(input, output, session) {
   output$layer_1_plot <- renderPlot({
       frame_for_plot() + layer_1_glyphs()
   })
+
+
 
 })
 
