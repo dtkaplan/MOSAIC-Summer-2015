@@ -14,8 +14,10 @@ geom_aesthetics <- list(
                     group = "few"),
   geom_point = list(x="any", y="any", 
                     color="num_or_few", size ="num_or_few", alpha="num_or_few"),
-  geom_bar   = list(x="any", y="any", color = "few", position = "bar_positions"),
-  geom_blank = list(x="any", y="any")
+  geom_bar   = list(x="any", y= "any",color = "few", position = "bar_positions"),
+  geom_blank = list(x="any", y="any"),
+  geom_map = list(map = "data with long and lat", map_id = "any", color = "any", fill = "few", linetype = "few", size = "num_or_few", alpha="num_or_few"
+                 )
 )
 
 # Storage for the frame
@@ -30,44 +32,7 @@ frame_def <<- reactiveValues(
 )
 
 # Storage for layers
-
-# Turn this into a function   DO THIS !!
-
-# The three layer_n_values are IDENTICAL except for layer component
-# layer_1_values <<- 
-#   reactiveValues(
-#     layer = 1,
-#     data = NULL, 
-#     geom = "geom_point",
-#     aes = data.frame(aes=c("x","y"), 
-#                      value=c("x","y"), 
-#                      role=rep("variable",2), 
-#                      stringsAsFactors=FALSE)
-#   ) 
-# layer_2_values <<-
-#   reactiveValues(
-#     layer = 2,
-#     data = NULL,
-#     geom = "geom_text",
-#     aes = data.frame(aes=c("x","y"), 
-#                      value=c("x","y"), 
-#                      role=rep("variable",2), 
-#                      stringsAsFactors=FALSE)
-#     )
-# 
-# layer_3_values <<-
-#   reactiveValues(
-#     layer = 3,
-#     data = NULL,
-#     geom = "geom_text",
-#     aes = data.frame(aes=c("x","y"), 
-#                      value=c("x","y"), 
-#                      role=rep("variable",2), 
-#                      stringsAsFactors=FALSE)
-#   )
-
 layer_n_values <<- function(n){
-  
   reactiveValues(
     layer = n,
     data = NULL,
@@ -77,9 +42,7 @@ layer_n_values <<- function(n){
                      role=rep("variable",2), 
                      stringsAsFactors=FALSE)
   )
-
 }
-
 
 # Helper functions
 

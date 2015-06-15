@@ -9,6 +9,10 @@ library(mosaicData)
 
 # JUST FOR DEBUGGING
 shinyServer(function(input, output, session) {
+
+  layer_1_values <- layer_n_values(1)  
+  layer_2_values <- layer_n_values(2)
+  layer_3_values <- layer_n_values(3)  
   
   # ===============================
   # Data reading reactives
@@ -25,7 +29,7 @@ shinyServer(function(input, output, session) {
     
     Tmp    
   })
-
+  
   get_uploaded_data <- reactive({
     if (is.null(input$data_own)) {
       # User has not uploaded a file yet
@@ -36,16 +40,15 @@ shinyServer(function(input, output, session) {
     }
     
     Dataset
-  })
+  })  
   
   data_name <- reactive({
-    input$package_data_name
-    
-#     input$data_own$name   #The filename provided by the web browser 
+    input$package_data_name    
     # CHANGE NEEDED
     # This needs to be changed to get the name of the csv file, if that's how data were loaded.
+    #     input$data_own$name   #The filename provided by the web browser 
   })
-
+  
   # ===================================
   # Interface between UI and plotting data structures and logic
   #
@@ -58,20 +61,11 @@ shinyServer(function(input, output, session) {
   
   observe({ # the geom has been set or changed
     if(frame_def$x != "bogus x") {
-      # remember, assignment is <<- for assignment at higher level
-      
-      
-      layer_n_geom(1)$geom <<- input$geom1
-      
-#      layer_1_geom <- layer_n_values(1) 
-#      layer_1_geom$geom <<- input$geom1
-#     '[<-' (layer_n_values(1), geom, input$geom1)
-    
-#       layer_1_geom <- layer_n_values(1)
-#       assign(layer_1_geom$geom, input$geom1) 
+      # remember, assignment is <<- for assignment at higher level        
+      layer_1_values$geom <<- input$geom1
 
       # pull in the old values
-      old <- layer_n_values(1)$aes
+      old <- layer_1_values$aes
       
       # keep those that are appropriate for new
       relevant <- geom_aesthetics[[input$geom1]]
@@ -82,8 +76,8 @@ shinyServer(function(input, output, session) {
       updateSelectInput(session, inputId="map1",
                         choices = names(relevant))
       # Get names from frame data or, if it's set, layer data
-      variable_names <- if (is.null(layer_n_values(1)$data)) names(frame_def$data)
-      else names(layer_n_values(1)$data)
+      variable_names <- if (is.null(layer_1_values$data)) names(frame_def$data)
+      else names(layer_1_values$data)
       # Set the x and y aesthetics if they haven't already been set.
       x_ind <- which(new_aes_table$aes == 'x')
       y_ind <- which(new_aes_table$aes == 'y')
@@ -95,20 +89,18 @@ shinyServer(function(input, output, session) {
       updateSelectInput(session, inputId="var1",
                         choices = c(variable_names,
                                     "none of them"))
-      updateSelectInput(session, inputId="set1",
+      updateSelectInput(session, inputId="map1",
                         choices = names(relevant))
-      layer_1_aes <- layer_n_values(1)$aes
-      assign(layer_1_aes, new_aes_table) 
-#       layer_n_values(1)$aes <<- new_aes_table
+     layer_1_values$aes <<- new_aes_table
     }
   })
   
   # These will need to be replicated for each layer  
   observeEvent(input$do_map_1, {
-    ind <- which(input$map1 == layer_n_values(1)$aes$aes)
-    layer_n_values(1)$aes$value[ind] <<- 
+    ind <- which(input$map1 == layer_1_values$aes$aes)
+    layer_1_values$aes$value[ind] <<- 
       ifelse("none of them" == input$var1, "", input$var1)
-    layer_n_values(1)$aes$role[ind]  <<- 
+    layer_1_values$aes$role[ind]  <<- 
       ifelse("none of them" == input$var1, "", "variable")
   }) 
   
@@ -124,33 +116,154 @@ shinyServer(function(input, output, session) {
     value <- gsub("^.+=","",S)
     num_value <- as.numeric(value)
     if( ! is.na(num_value)) value <- num_value
-    ind <- which(aes_name == layer_n_values(1)$aes$aes)
+    ind <- which(aes_name == layer_1_values$aes$aes)
     if( length(ind) == 1 ) {
-      layer_n_values(1)$aes$value[ind] <<- value
-      layer_n_values(1)$aes$role[ind]  <<- "constant"
+      layer_1_values$aes$value[ind] <<- value
+      layer_1_values$aes$role[ind]  <<- "constant"
     }
- })
+  })
   
-# ==== SAME STUFF BUT DUPLICATED FOR LAYER 2
-
-
-# ==== When that works, then add in Layer 3
+  # ==== SAME STUFF BUT DUPLICATED FOR LAYER 2=====================================
+  observe({ # the geom has been set or changed
+    if(frame_def$x != "bogus x") {
+      # remember, assignment is <<- for assignment at higher level
+      layer_2_values$geom <<- input$geom2 
+      # pull in the old values
+      old <- layer_2_values$aes
+      
+      # keep those that are appropriate for new
+      relevant <- geom_aesthetics[[input$geom2]]
+      new_aes_table <<- 
+        new_aes_table_helper(names(relevant), old)
+      
+      # update the choices for mapping and setting
+      updateSelectInput(session, inputId="map2",
+                        choices = names(relevant))
+      # Get names from frame data or, if it's set, layer data
+      variable_names <- if (is.null(layer_2_values$data)) names(frame_def$data)
+      else names(layer_2_values$data)
+      # Set the x and y aesthetics if they haven't already been set.
+      x_ind <- which(new_aes_table$aes == 'x')
+      y_ind <- which(new_aes_table$aes == 'y')
+      new_aes_table$value[x_ind] <- frame_def$x
+      new_aes_table$value[y_ind] <- frame_def$y
+      new_aes_table$role[x_ind] <- "variable"
+      new_aes_table$role[y_ind] <- "variable"
+      # More control updates
+      updateSelectInput(session, inputId="var2",
+                        choices = c(variable_names,
+                                    "none of them"))
+      updateSelectInput(session, inputId="map2",
+                        choices = names(relevant))
+      layer_2_values$aes <<- new_aes_table
+    }
+  })
+  
+#   These will need to be replicated for each layer  
+  observeEvent(input$do_map_2, {
+    ind <- which(input$map2 == layer_2_values$aes$aes)
+    layer_2_values$aes$value[ind] <<- 
+      ifelse("none of them" == input$var2, "", input$var2)
+    layer_2_values$aes$role[ind]  <<- 
+      ifelse("none of them" == input$var2, "", "variable")
+  }) 
+  
+  observeEvent(input$do_set_2, {
+    S <- input$set_val_2
+    S <- gsub('“', "", S)
+    S <- gsub('\"', "", S)
+    S <- gsub("'", "", S)
+    S <- gsub("‘", "", S)
+    S <- gsub(" ", "", S)
+    aes_name <- gsub("=.+$","",S)
+    aes_name <- gsub(" ", "", aes_name)
+    value <- gsub("^.+=","",S)
+    num_value <- as.numeric(value)
+    if( ! is.na(num_value)) value <- num_value
+    ind <- which(aes_name == layer_2_values$aes$aes)
+    if( length(ind) == 1 ) {
+      layer_2_values$aes$value[ind] <<- value
+      layer_2_values$aes$role[ind]  <<- "constant"
+    }
+  })
   
   
+ # ==== When that works, then add in Layer 3
   
+  observe({ # the geom has been set or changed
+    if(frame_def$x != "bogus x") {
+      # remember, assignment is <<- for assignment at higher level
+      layer_3_values$geom <<- input$geom3 
+      # pull in the old values
+      old <- layer_3_values$aes
+      
+      # keep those that are appropriate for new
+      relevant <- geom_aesthetics[[input$geom3]]
+      new_aes_table <<- 
+        new_aes_table_helper(names(relevant), old)
+      
+      # update the choices for mapping and setting
+      updateSelectInput(session, inputId="map3",
+                        choices = names(relevant))
+      # Get names from frame data or, if it's set, layer data
+      variable_names <- if (is.null(layer_3_values$data)) names(frame_def$data)
+      else names(layer_3_values$data)
+      # Set the x and y aesthetics if they haven't already been set.
+      x_ind <- which(new_aes_table$aes == 'x')
+      y_ind <- which(new_aes_table$aes == 'y')
+      new_aes_table$value[x_ind] <- frame_def$x
+      new_aes_table$value[y_ind] <- frame_def$y
+      new_aes_table$role[x_ind] <- "variable"
+      new_aes_table$role[y_ind] <- "variable"
+      # More control updates
+      updateSelectInput(session, inputId="var3",
+                        choices = c(variable_names,
+                                    "none of them"))
+      updateSelectInput(session, inputId="map3",
+                        choices = names(relevant))
+      layer_3_values$aes <<- new_aes_table
+    }
+  })
   
+  # These will need to be replicated for each layer  
+  observeEvent(input$do_map_3, {
+    ind <- which(input$map1 == layer_3_values$aes$aes)
+    layer_3_values$aes$value[ind] <<- 
+      ifelse("none of them" == input$var3, "", input$var3)
+    layer_3_values$aes$role[ind]  <<- 
+      ifelse("none of them" == input$var3, "", "variable")
+  }) 
+  
+  observeEvent(input$do_set_3, {
+    S <- input$set_val_3
+    S <- gsub('“', "", S)
+    S <- gsub('\"', "", S)
+    S <- gsub("'", "", S)
+    S <- gsub("‘", "", S)
+    S <- gsub(" ", "", S)
+    aes_name <- gsub("=.+$","",S)
+    aes_name <- gsub(" ", "", aes_name)
+    value <- gsub("^.+=","",S)
+    num_value <- as.numeric(value)
+    if( ! is.na(num_value)) value <- num_value
+    ind <- which(aes_name == layer_3_values$aes$aes)
+    if( length(ind) == 1 ) {
+      layer_3_values$aes$value[ind] <<- value
+      layer_3_values$aes$role[ind]  <<- "constant"
+    }
+  })
   
   
   # ===================================
   # Display outputs
-
+  
   # fill in the display in the data selection panel
   output$table <- renderDataTable({ this_dataset() })
   
-  
-  output$disp_aes_1 <- renderTable(layer_n_values(1)$aes)
-  output$disp_aes_2 <- renderTable(layer_n_values(2)$aes)
-  output$disp_aes_3 <- renderTable(layer_n_values(3)$aes)
+  output$disp_aes_1 <- renderTable(layer_1_values$aes)
+  output$disp_aes_2 <- renderTable(layer_2_values$aes)
+  output$disp_aes_3 <- renderTable(layer_3_values$aes)
+
   
   observe({ # put the data into frame_def$data
     data_name <- data_name()
@@ -161,20 +274,20 @@ shinyServer(function(input, output, session) {
   })
   
   layer_1_glyphs <- reactive({
-    args <- make_geom_argument_list(layer_n_values(1)$aes)
-    do.call(layer_n_values(1)$geom, args)
+    args <- make_geom_argument_list(layer_1_values$aes)
+    do.call(layer_1_values$geom, args)
   })
   
   layer_2_glyphs <- reactive({
-    args <- make_geom_argument_list(layer_n_values(2)$aes)
-    do.call(layer_n_values(2)$geom, args)
+    args <- make_geom_argument_list(layer_2_values$aes)
+    do.call(layer_2_values$geom, args)
   })
   
   layer_3_glyphs <- reactive({
-    args <- make_geom_argument_list(layer_n_values(3)$aes)
-    do.call(layer_n_values(3)$geom, args)
+    args <- make_geom_argument_list(layer_3_values$aes)
+    do.call(layer_3_values$geom, args)
   })
- 
+  
   frame_for_plot <- reactive({
     ## Why the return(NULL) here?  is this a BOGUS STOP POINT?
     if (frame_def$x == "pick data set") return(NULL)
@@ -190,31 +303,23 @@ shinyServer(function(input, output, session) {
     if( input$show_layer_1 ) 
       P <- P + layer_1_glyphs()
     if( input$show_layer_2 )
-      P <- P + layer_2_glyps()
-    # and similarly for layer 3
+      P <- P + layer_2_glyphs()
+    if( input$show_layer_3 )
+      P <- P + layer_3_glyphs()
     
     P
   })
   
   output$layer_1_plot <- renderPlot({
-      frame_for_plot() + layer_1_glyphs()
+    frame_for_plot() + layer_1_glyphs()
   })
-
-
-
+  
+  output$layer_2_plot <- renderPlot({
+    frame_for_plot() + layer_2_glyphs()
+  })
+  
+  output$layer_3_plot <- renderPlot({
+    frame_for_plot() + layer_3_glyphs()
+  })
+  
 })
-
-
-# ============== Server and Observers ============
-# shinyServer(
-foo <-   function(input,output,session){
-
-  
- 
-  
-
-  
-
-
-  
-}
