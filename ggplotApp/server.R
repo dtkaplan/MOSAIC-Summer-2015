@@ -9,9 +9,11 @@ library(mosaicData)
 
 # JUST FOR DEBUGGING
 shinyServer(function(input, output, session) {
+
   layer_1_values <- layer_n_values(1)
   layer_2_values <- layer_n_values(2)
   layer_3_values <- layer_n_values(3)
+
   # ===============================
   # Data reading reactives
   #
@@ -38,12 +40,13 @@ shinyServer(function(input, output, session) {
     }
     
     Dataset
-  })
+  })  
   
   data_name <- reactive({
-    input$package_data_name
+    input$package_data_name    
     # CHANGE NEEDED
     # This needs to be changed to get the name of the csv file, if that's how data were loaded.
+    #     input$data_own$name   #The filename provided by the web browser 
   })
   
   # ===================================
@@ -58,8 +61,9 @@ shinyServer(function(input, output, session) {
   
   observe({ # the geom has been set or changed
     if(frame_def$x != "bogus x") {
-      # remember, assignment is <<- for assignment at higher level
-      layer_1_values$geom <<- input$geom1 
+      # remember, assignment is <<- for assignment at higher level        
+      layer_1_values$geom <<- input$geom1
+
       # pull in the old values
       old <- layer_1_values$aes
       
@@ -87,7 +91,7 @@ shinyServer(function(input, output, session) {
                                     "none of them"))
       updateSelectInput(session, inputId="map1",
                         choices = names(relevant))
-      layer_1_values$aes <<- new_aes_table
+     layer_1_values$aes <<- new_aes_table
     }
   })
   
@@ -259,6 +263,7 @@ shinyServer(function(input, output, session) {
   output$disp_aes_1 <- renderTable(layer_1_values$aes)
   output$disp_aes_2 <- renderTable(layer_2_values$aes)
   output$disp_aes_3 <- renderTable(layer_3_values$aes)
+
   
   observe({ # put the data into frame_def$data
     data_name <- data_name()
@@ -301,7 +306,6 @@ shinyServer(function(input, output, session) {
       P <- P + layer_2_glyphs()
     if( input$show_layer_3 )
       P <- P + layer_3_glyphs()
-
     
     P
   })
@@ -319,18 +323,3 @@ shinyServer(function(input, output, session) {
   })
   
 })
-
-
-# ============== Server and Observers ============
-# shinyServer(
-foo <-   function(input,output,session){
-
-  
- 
-  
-
-  
-
-
-  
-}
