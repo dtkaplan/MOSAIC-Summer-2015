@@ -5,17 +5,25 @@ library(mosaicData)
 # Available datasets
 # CHANGE THIS logic to pull from any of a list of packages.
 datasets <- list( Galton = mosaicData::Galton, Heightweight = mosaicData::Heightweight,
-                  SwimRecords = mosaicData::SwimRecords, TenMileRace = TenMileRace)
+                  SwimRecords = mosaicData::SwimRecords, TenMileRace = mosaicData::TenMileRace)
 
 
 geom_aesthetics <- list(
-  geom_line  = list(x="any", y="any", 
-                    color = "few", size="num_or_few", type="few",
-                    group = "few"),
-  geom_point = list(x="any", y="any", 
-                    color="num_or_few", size ="num_or_few", alpha="num_or_few"),
-  geom_bar   = list(x="any", y="any", color = "few", position = "bar_positions"),
-  geom_blank = list(x="any", y="any")
+  geom_line  = list(x = "any", y = "any", color = "few", alpha = "num",
+                    size = "num_or_few", linetype = "few"),
+  geom_point = list(x = "any", y = "any", color = "num_or_few", size = "num_or_few", 
+                    alpha = "num_or_few", fill = "few", shape = "few"),
+  geom_bar   = list(x = "any", color = "few", alpha = "num_or_few", fill = "few",
+                    linetype = "few", size ="num_or_few", weight = "num_or_few"),
+  geom_hline = list(x = "any", y = "any", alpha = "num_or_few", color = "num_or_few",
+                    linetype = "few",size = "num_or_few"),
+  geom_vline = list(x = "any", y = "any", alpha = "num_or_few", color = "num_or_few",
+                    linetype = "few",size = "num_or_few"),
+  geom_abline = list(x = "any", y = "any", alpha = "num_or_few", color = "num_or_few", 
+                     linetype = "few", size = "num_or_few"),
+  geom_smooth = list(x = "any", y = "any", color = "few", alpha = "num",
+                     size = "num_or_few", linetype = "few", fill = "few", weight = "num_or_few"),
+  geom_blank = list(x = "any", y = "any")
 )
 
 # Storage for the frame
@@ -29,35 +37,12 @@ frame_def <<- reactiveValues(
   facet_y = NULL
 )
 
-# Storage for layers
+# Helper functions
 
-# Turn this into a function   DO THIS !!
-
-# The three layer_n_values are IDENTICAL except for layer component
-layer_1_values <<- 
+layer_n_values <<- function(n){
+  
   reactiveValues(
-    layer = 1,
-    data = NULL, 
-    geom = "geom_point",
-    aes = data.frame(aes=c("x","y"), 
-                     value=c("x","y"), 
-                     role=rep("variable",2), 
-                     stringsAsFactors=FALSE)
-  ) 
-layer_2_values <<-
-  reactiveValues(
-    layer = 2,
-    data = NULL,
-    geom = "geom_text",
-    aes = data.frame(aes=c("x","y"), 
-                     value=c("x","y"), 
-                     role=rep("variable",2), 
-                     stringsAsFactors=FALSE)
-    )
-
-layer_3_values <<-
-  reactiveValues(
-    layer = 3,
+    layer = n,
     data = NULL,
     geom = "geom_text",
     aes = data.frame(aes=c("x","y"), 
@@ -65,8 +50,9 @@ layer_3_values <<-
                      role=rep("variable",2), 
                      stringsAsFactors=FALSE)
   )
+  
+}
 
-# Helper functions
 
 # Turn the layer values into something suited to do.call() in making plot.
 make_geom_argument_list <- function(values) {
@@ -89,7 +75,6 @@ make_geom_argument_list <- function(values) {
   
   res
 }
-
 
 
 new_aes_table_helper <- function(new_aes_names, old_aes_df) {
