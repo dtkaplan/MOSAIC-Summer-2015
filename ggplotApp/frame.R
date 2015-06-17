@@ -1,8 +1,6 @@
 library(shiny)
 library(DCF)
 
-
-
 frame_tab <- tabPanel(
   "Frame",
   column(4,

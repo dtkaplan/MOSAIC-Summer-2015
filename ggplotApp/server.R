@@ -43,10 +43,12 @@ shinyServer(function(input, output, session) {
   })  
   
   data_name <- reactive({
-    input$package_data_name    
-    # CHANGE NEEDED
-    # This needs to be changed to get the name of the csv file, if that's how data were loaded.
-    #     input$data_own$name   #The filename provided by the web browser 
+    #Get data name for both uploaded file and data from existing datasets  
+    if(is.null(input$data_own)){
+      input$package_data_name 
+    } else {
+      input$data_own
+    } 
   })
   
   # ===================================
@@ -72,9 +74,8 @@ shinyServer(function(input, output, session) {
       new_aes_table <<- 
         new_aes_table_helper(names(relevant), old)
       
-      # update the choices for mapping and setting
-      updateSelectInput(session, inputId="map1",
-                        choices = names(relevant))
+    
+
       # Get names from frame data or, if it's set, layer data
       variable_names <- if (is.null(layer_1_values$data)) names(frame_def$data)
       else names(layer_1_values$data)
@@ -85,7 +86,8 @@ shinyServer(function(input, output, session) {
       new_aes_table$value[y_ind] <- frame_def$y
       new_aes_table$role[x_ind] <- "variable"
       new_aes_table$role[y_ind] <- "variable"
-      # More control updates
+      
+      # update the choices for mapping and setting
       updateSelectInput(session, inputId="var1",
                         choices = c(variable_names,
                                     "none of them"))
