@@ -14,6 +14,31 @@ shinyServer(function(input, output, session) {
   layer_2_values <- layer_n_values(2)
   layer_3_values <- layer_n_values(3)
 
+  #Display icon for the geom chosen. Images files are stored in the 'www' folder, and named after the geoms.
+  output$icon1 <- renderImage({
+    filename <- normalizePath(file.path('./www',
+                                        paste(input$geom1, '.png', sep='')))
+    
+    list(src = filename,
+         height = 250, width = 250)
+  }, deleteFile = FALSE)
+
+  output$icon2 <- renderImage({
+    filename <- normalizePath(file.path('./www',
+                                        paste(input$geom2, '.png', sep='')))
+    
+    list(src = filename,
+         height = 250, width = 250)
+  }, deleteFile = FALSE)
+  
+  output$icon3 <- renderImage({
+    filename <- normalizePath(file.path('./www',
+                                        paste(input$geom3, '.png', sep='')))
+    
+    list(src = filename,
+         height = 250, width = 250) 
+  }, deleteFile = FALSE)
+
   # ===============================
   # Data reading reactives
   #
@@ -43,10 +68,13 @@ shinyServer(function(input, output, session) {
   })  
   
   data_name <- reactive({
-    input$package_data_name    
-    # CHANGE NEEDED
-    # This needs to be changed to get the name of the csv file, if that's how data were loaded.
-    #     input$data_own$name   #The filename provided by the web browser 
+    #Get data name for both uploaded file and data from existing datasets
+    
+    if(is.null(input$data_own)){
+      input$package_data_name 
+    } else {
+      input$data_own
+    } 
   })
   
   # ===================================
