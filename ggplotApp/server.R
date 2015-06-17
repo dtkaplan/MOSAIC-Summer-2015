@@ -12,8 +12,34 @@ shinyServer(function(input, output, session) {
 
   layer_1_values <- layer_n_values(1)  
   layer_2_values <- layer_n_values(2)
-  layer_3_values <- layer_n_values(3)  
+  layer_3_values <- layer_n_values(3)
+
+  #Display icon for the geom chosen. Images files are stored in the 'www' folder, and named after the geoms.
+  output$icon1 <- renderImage({
+    filename <- normalizePath(file.path('./www',
+                                        paste(input$geom1, '.png', sep='')))
+    
+    list(src = filename,
+         height = 250, width = 250)
+  }, deleteFile = FALSE)
+
+  output$icon2 <- renderImage({
+    filename <- normalizePath(file.path('./www',
+                                        paste(input$geom2, '.png', sep='')))
+    
+    list(src = filename,
+         height = 250, width = 250)
+  }, deleteFile = FALSE)
   
+  output$icon3 <- renderImage({
+    filename <- normalizePath(file.path('./www',
+                                        paste(input$geom3, '.png', sep='')))
+    
+    list(src = filename,
+         height = 250, width = 250) 
+  }, deleteFile = FALSE)
+
+
   # ===============================
   # Data reading reactives
   #
@@ -43,7 +69,9 @@ shinyServer(function(input, output, session) {
   })  
   
   data_name <- reactive({
-    #Get data name for both uploaded file and data from existing datasets  
+
+    #Get data name for both uploaded file and data from existing datasets
+    
     if(is.null(input$data_own)){
       input$package_data_name 
     } else {

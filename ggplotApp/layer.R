@@ -11,24 +11,28 @@ make_layer <- function(n) {
   act_var_id <- paste0("do_set_",n)
   plot_id <- paste0("layer_",n,"_plot")
   table_id <- paste0("disp_aes_",n)
+  icon_id <- paste0("icon",n)
   
   tabPanel(label,
            column(4,
                   selectInput(geom_id, "Geom for this layer:",
-                              choices = c(names(geom_aesthetics)),
-                              selected = "geom_blank"),
-                  wellPanel(
-                    selectInput(select_map_id, "Map aesthetic:", 
-                                choices = c("first, select geom")),
-                    selectInput(select_var_id, "Pick variable", choices=c(1,2,3)),
-                    actionButton(act_map_id, "Map it!")
-                  ),
+                                choices = c(names(geom_aesthetics)),
+                                selected = "geom_blank"),
+                    #img(src="geom_line.png", height = 200, width = 200),
+                    imageOutput(icon_id),
                   
-                  wellPanel(
-                    textInput(set_var_id,"Set aesthetic, e.g. color = 'red'"),
-                    actionButton(act_var_id, "Set it!") 
-                  )
-           ),
+                    wellPanel(
+                      selectInput(select_map_id, "Map aesthetic:", 
+                                  choices = c("first, select geom")),
+                      selectInput(select_var_id, "Pick variable", choices=c(1,2,3)),
+                      actionButton(act_map_id, "Map it!")
+                    ),
+                    
+                    wellPanel(
+                      textInput(set_var_id,"Set aesthetic, e.g. color = 'red'"),
+                      actionButton(act_var_id, "Set it!") 
+                    )
+                  ),
            column(8, 
                   wellPanel(
                     plotOutput(plot_id)
@@ -48,7 +52,12 @@ layer_tab <- tabPanel(
     make_layer(1),
     make_layer(2),
     make_layer(3)
+<<<<<<< HEAD
     )
 )
   
 
+=======
+  )
+)
+>>>>>>> 35a47a5c15b691bbcde9d592ddf7f6f31b58ef74
