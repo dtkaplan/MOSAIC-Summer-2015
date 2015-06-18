@@ -11,17 +11,29 @@ China.f <- ggplot2::fortify(China, region = "ADMIN_NAME")
 world <- rgdal::readOGR(dsn = "www/WorldCountries", "world_country_admin_boundary_shapefile_with_fips_codes")
 world.f <- ggplot2::fortify(world, region = "CNTRY_NAME")    #Convert to a form suited to ggplot
 
-datasets  <- list ("China" = China.f, "World" = world.f)
-
+data1 <- list ("China" = China.f, "World" = world.f, "London" = sport.wgs84.f)
+data2 <- list ("China Pop" = China@data, "London Sports" = sport.wgs84@data)
 
 
 shinyServer(function(input, output, session) {
   
-
+  data_chosen <- reactive({
+    tmp1 <- data1[[input$data_source]]
+    tmp2 <- data2[[input$data_to_join]]
+    
+    #cann't plot without joining
+    if(is.null(input$data_to_join)) {return (tmp1) }
+    else {
+      #browser()  #need a helper function to handle join
+      data_joined<- left_join(tmp1, tmp2, by = c("id" = "ADMIN_NAME"))
+      return (data_joined)
+    }
+    })
+  
   
 #   output$disp_aes_1 <- renderTable(layer_1_values$aes)
 #   layer_1_values <- layer_n_values(1)
-#   
+#  
 #   observe({
 # #     this_dataset() # for the dependency if data changes
 #     frame_def$x <<- input$frame_x
@@ -46,18 +58,21 @@ shinyServer(function(input, output, session) {
     updateSelectInput(session, inputId = "map_type",
                       choices = relevant
     )
+    ### Update choices for fill
+#     browser()
+#     updateSelectInput(session, inputId = "fill_var",
+#                       choices = names(data_chosen())
+#     )
+    
   })
 
   
   frame_for_plot <- reactive({
-    data_chosen <- datasets[[input$data_source]]
-    
     # if (frame_def$x == "pick data set") return(NULL)
     if (input$plotFun == "1"){
       #browser()  #Note aes_string doesn't work
-      p <- ggplot(data=data_chosen,
-                  aes(x=long, y=lat,group =group )) + geom_path()
-    }
+      p <- ggplot(data=data_chosen(),
+                  aes(x=long, y=lat,group = group))} 
    
     if (input$plotFun == "2"){
       # browser() #input must all be character strings
@@ -70,7 +85,11 @@ shinyServer(function(input, output, session) {
   })
   
   output$frame_plot <- renderPlot({
-    P <- frame_for_plot() 
+    if (input$geom1 == "geom_path")
+      P <- frame_for_plot() + geom_path()
+    if (input$geom1 == "geom_polygon")
+      P<- frame_for_plot() + geom_polygon()
+    
     #     if( !(input$show_layer_1 | input$show_layer_2 | input$show_layer_3) )
     #       P <- P + geom_blank()
     #     if( input$show_layer_1 ) 
@@ -117,8 +136,9 @@ shinyServer(function(input, output, session) {
 #       # update the choices for mapping and setting
 #       updateSelectInput(session, inputId="map1",
 #                         choices = names(relevant))
+#       
 #       # Get names from frame data or, if it's set, layer data
-#       variable_names <- if (is.null(layer_1_values$data)) names(frame_def$data)
+#       variable_names <- if (is.null(layer_1_values$data)) names(data_chosen())
 #       else names(layer_1_values$data)
 #       # Set the x and y aesthetics if they haven't already been set.
 #       x_ind <- which(new_aes_table$aes == 'x')
@@ -131,8 +151,6 @@ shinyServer(function(input, output, session) {
 #       updateSelectInput(session, inputId="var1",
 #                         choices = c(variable_names,
 #                                     "none of them"))
-#       updateSelectInput(session, inputId="map1",
-#                         choices = names(relevant))
 #       layer_1_values$aes <<- new_aes_table
 #     }
 #   })
@@ -164,12 +182,12 @@ shinyServer(function(input, output, session) {
 #       layer_1_values$aes$role[ind]  <<- "constant"
 #     }
 #   })
-# 
+# # 
 #   layer_1_glyphs <- reactive({
 #     args <- make_geom_argument_list(layer_1_values$aes)
 #     do.call(layer_1_values$geom, args)
 #   })
-#   
+#    
  
   
 })
