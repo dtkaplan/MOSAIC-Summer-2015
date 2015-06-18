@@ -8,6 +8,7 @@
 library(shiny)
 library(ggplot2)
 library(dplyr)
+library(ggmap)
 library(mosaicData)
 
 shinyUI(fluidPage(
@@ -19,20 +20,30 @@ shinyUI(fluidPage(
   sidebarLayout(
     sidebarPanel(
       wellPanel(
-#         selectInput("data_source", "Choose data set:",
-#                     choices = data(package="mosaicData")$results[,"Item"]),
+        #         selectInput("data_source", "Choose data set:",
+        #                     choices = data(package="mosaicData")$results[,"Item"]),
         
-        selectInput("plotFun", "Choose a plottng fucntion:", choices = list("ggplot" = 1, "ggmap" = 2)),
-        textInput("location", "Please type a location you want", value = ""),
-        selectInput("map_source", "Choose a map source:", choices = list("stamen" = 1, "google" = 2, "osm" = 3)),
-        selectInput("map_type", "Choose a map type:", choices = ""),
-        selectInput("frame_x","Frame x variable",
-                    choices = names(datasets)),
-        selectInput("frame_y","Frame y variable",
-                    choices = names(datasets))
+        selectInput("plotFun", "Choose a plotting function:", choices = list("ggplot" = 1, "ggmap" = 2)),
+        
+        conditionalPanel(condition = "input.plotFun == '1'",
+                         
+                         selectInput("data_source","Please choose a dataset",
+                                     choices = list("China","World"))
+        ),
+        
+        conditionalPanel(condition = "input.plotFun == '2'", 
+                         textInput("location", "Please type a location you want", value = ""),
+                         selectInput("map_source", "Choose a map source:", choices = list("stamen", "google", "osm")),
+                         selectInput("map_type", "Choose a map type:", choices = "") 
+        ),
+        
+        actionButton("make_plot", "Plot the map")
+        
+        
       ),
+      
       wellPanel(
-        selectInput("geom1", "Geom for this layer:",
+        selectInput("geom1", "Add a geom for this layer:",
                     choices = 
                       c(names(geom_aesthetics)),
                     selected = "geom_map"),

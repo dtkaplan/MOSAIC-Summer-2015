@@ -4,7 +4,7 @@ library(mosaicData)
 
 # Available datasets
 # CHANGE THIS logic to pull from any of a list of packages.
-datasets <- all
+
 
 geom_aesthetics <- list(
   geom_map = list(map = "data with long and lat", map_id = "any", color = "any", fill = "few", linetype = "few", size = "num_or_few", alpha="num_or_few"
