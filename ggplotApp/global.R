@@ -1,6 +1,6 @@
 # Name aesthetics for each geom type:
 
-library(mosaicData)
+library(mosaicData) 
 
 # Available datasets
 # CHANGE THIS logic to pull from any of a list of packages.
