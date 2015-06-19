@@ -7,12 +7,11 @@ library(mosaicData)
 
 
 geom_aesthetics <- list(
-  geom_map = list(map = "data with long and lat", map_id = "any", color = "any", fill = "few", linetype = "few", size = "num_or_few", alpha="num_or_few"
+  geom_path = list(color = "any", group = "any", linetype = "few", size = "num_or_few", alpha="num_or_few"
   ),
   geom_polygon = list(color = "any", group = "any", fill = "few", linetype = "few", size = "num_or_few", alpha="num_or_few"
-  ),
-  geom_path = list(color = "any", group = "any", linetype = "few", size = "num_or_few", alpha="num_or_few"
   )
+
 )
 
 # Storage for the frame
