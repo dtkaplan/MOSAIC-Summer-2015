@@ -9,7 +9,11 @@ China <- rgdal::readOGR(dsn = "www/China", "ch")
 
 # World Map Data
 world <- rgdal::readOGR(dsn = "www/WorldCountries", "world_country_admin_boundary_shapefile_with_fips_codes")
+<<<<<<< HEAD
 #world.f <- ggplot2::fortify(world, region = "CNTRY_NAME")    #Convert to a form suited to ggplot
+=======
+world.f <- ggplot2::fortify(world, region = "CNTRY_NAME")    #Convert to a form suited to ggplot
+>>>>>>> 583c5dc278787ef4633282a35ef8cacbb2a3b220
 
 data1 <- list ("China" = China.f, "London" = sport.wgs84.f)
 data2 <- list ("China Pop" = China@data, "London Sports" = sport.wgs84@data)
