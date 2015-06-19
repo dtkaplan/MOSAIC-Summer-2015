@@ -1,0 +1,41 @@
+---
+title: "Notes for geom_map"
+author: "Mengdie"
+date: "6/16/2015"
+output: html_document
+---
+
+```{r}
+install.packages(c("rgeos", "gpclib", "maptools", "sp"))
+library(RCurl)
+
+
+# READ IN DATA
+fileUrl <- "https://gist.githubusercontent.com/prabhasp/5030005/raw/zfstat-063%20reformatted.csv"
+
+
+data <- download.file(fileUrl, destfile = "/Users/mwang3", method = "curl")
+
+dataUrl <-getURL(fileUrl)
+edu63 <- read.table(textConnection(fileUrl),sep=",", header = TRUE)
+
+# WHAT COLUMNS DO WE HAVE?
+library(plyr)
+colwise(class)(edu63)
+
+library(rgeos)
+library(maptools)
+library(gpclib)  # may be needed, may not be
+
+# MAP
+np_dist <- readShapeSpatial("~/Downloads/NPL_adm/NPL_adm3.shp")
+# VERIFY IT LOADED PROPERLY
+plot(np_dist)
+
+library(ggplot2)
+np_dist <- fortify(np_dist, region = "NAME_3")
+np_dist$id <- toupper(np_dist$id)  #change ids to uppercase
+ggplot() + geom_map(data = edu63, aes(map_id = District, fill = PASS.PERCENT), 
+    map = np_dist) + expand_limits(x = np_dist$long, y = np_dist$lat)
+
+```

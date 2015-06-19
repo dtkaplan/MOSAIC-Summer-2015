@@ -10,7 +10,7 @@ library(mosaicData)
 # JUST FOR DEBUGGING
 shinyServer(function(input, output, session) {
 
-  layer_1_values <- layer_n_values(1)
+  layer_1_values <- layer_n_values(1)  
   layer_2_values <- layer_n_values(2)
   layer_3_values <- layer_n_values(3)
 
@@ -38,6 +38,7 @@ shinyServer(function(input, output, session) {
     list(src = filename,
          height = 250, width = 250) 
   }, deleteFile = FALSE)
+
 
   # ===============================
   # Data reading reactives
@@ -68,6 +69,7 @@ shinyServer(function(input, output, session) {
   })  
   
   data_name <- reactive({
+
     #Get data name for both uploaded file and data from existing datasets
     
     if(is.null(input$data_own)){
@@ -100,9 +102,8 @@ shinyServer(function(input, output, session) {
       new_aes_table <<- 
         new_aes_table_helper(names(relevant), old)
       
-      # update the choices for mapping and setting
-      updateSelectInput(session, inputId="map1",
-                        choices = names(relevant))
+    
+
       # Get names from frame data or, if it's set, layer data
       variable_names <- if (is.null(layer_1_values$data)) names(frame_def$data)
       else names(layer_1_values$data)
@@ -113,7 +114,8 @@ shinyServer(function(input, output, session) {
       new_aes_table$value[y_ind] <- frame_def$y
       new_aes_table$role[x_ind] <- "variable"
       new_aes_table$role[y_ind] <- "variable"
-      # More control updates
+      
+      # update the choices for mapping and setting
       updateSelectInput(session, inputId="var1",
                         choices = c(variable_names,
                                     "none of them"))

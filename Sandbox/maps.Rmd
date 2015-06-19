@@ -6,11 +6,17 @@ output: html_document
 ---
 
 ```{r include=FALSE}
-library(maptools)
-library(ggmap)
-library(rgdal)
-library(ggplot2)
-library(rgeos)
+x <- c("maptools","ggmap","rgdal","ggplot2","rgeos","dplyr","tidyr")
+# install.packages(x)
+lapply (x,library,character.only=TRUE)
+
+# library(maptools)
+# library(ggmap)
+# library(rgdal)
+# library(ggplot2)
+# library(rgeos)
+
+
 ```
 
 
@@ -42,12 +48,15 @@ Map <-
   coord_equal() + 
   labs(x = "Easting (m)", y = "Northing (m)", fill = "% Sport Partic.") + 
   ggtitle("London Sports Participation")
+scale_fill_gradient(low = "white", high = "black")
 ```
 
 ```{r}
-Map + scale_fill_gradient(low = "white", high = "black")
-```
 
+
+
+
+```
 
 
 # Base Maps
@@ -83,6 +92,13 @@ lnd.b1 +
   geom_polygon(data = sport.wgs84.f, 
                aes(x = long, y = lat, group = group, fill = Partic_Per), 
     alpha = 0.5)
+```
+
+# China map
+
+```{r eval=FALSE}
+China <- rgdal::readOGR(dsn = "www/China", "ch")
+China.f <- ggplot2::fortify(China, region = "ADMIN_NAME")
 ```
 
 # World Map

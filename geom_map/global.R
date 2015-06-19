@@ -1,23 +1,18 @@
 # Name aesthetics for each geom type:
 
-library(mosaicData) 
+library(mosaicData)
 
 # Available datasets
 # CHANGE THIS logic to pull from any of a list of packages.
-datasets <- list( Galton = mosaicData::Galton, Heightweight = mosaicData::Heightweight,
-                  SwimRecords = mosaicData::SwimRecords, TenMileRace = mosaicData::TenMileRace)
 
 
 geom_aesthetics <- list(
-  geom_line  = list(x="any", y="any", 
-                    color = "few", size="num_or_few", type="few",
-                    group = "few"),
-  geom_point = list(x="any", y="any", 
-                    color="num_or_few", size ="num_or_few", alpha="num_or_few"),
-  geom_bar   = list(x="any", y= "any",color = "few", position = "bar_positions"),
-  geom_blank = list(x="any", y="any"),
   geom_map = list(map = "data with long and lat", map_id = "any", color = "any", fill = "few", linetype = "few", size = "num_or_few", alpha="num_or_few"
-                 )
+  ),
+  geom_polygon = list(color = "any", group = "any", fill = "few", linetype = "few", size = "num_or_few", alpha="num_or_few"
+  ),
+  geom_path = list(color = "any", group = "any", linetype = "few", size = "num_or_few", alpha="num_or_few"
+  )
 )
 
 # Storage for the frame
@@ -48,7 +43,7 @@ layer_n_values <<- function(n){
 
 # Turn the layer values into something suited to do.call() in making plot.
 make_geom_argument_list <- function(values) {
-
+  
   mapping_inds <- 
     which(values$role == "variable")
   setting_inds <-

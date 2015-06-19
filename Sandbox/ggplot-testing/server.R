@@ -11,12 +11,6 @@ library(dplyr)
 library(mosaicData)
 
 
-new_aes_table_helper <- function(new_aes_names, old_aes_df) {
-  new_df <- data.frame(aes=new_aes_names, stringsAsFactors=FALSE)
-  dplyr::left_join(new_df, old_aes_df, by="aes")
-}
-
-
 shinyServer(function(input, output, session) {
   
   output$disp_aes_1 <- renderTable(layer_1_values$aes)

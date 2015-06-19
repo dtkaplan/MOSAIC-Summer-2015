@@ -52,5 +52,12 @@ layer_tab <- tabPanel(
     make_layer(1),
     make_layer(2),
     make_layer(3)
+<<<<<<< HEAD
+    )
+)
+  
+
+=======
   )
 )
+>>>>>>> 35a47a5c15b691bbcde9d592ddf7f6f31b58ef74
