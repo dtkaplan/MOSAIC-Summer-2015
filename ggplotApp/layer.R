@@ -1,7 +1,5 @@
-library("shiny")
-
 make_layer <- function(n) {
-  
+  #The function takes an input n and create layer panel. It will assign unique Id to each input in each layer 
   label <- paste("Layer",n)
   geom_id <- paste0("geom",n)
   select_map_id <- paste0("map",n)
@@ -18,7 +16,6 @@ make_layer <- function(n) {
                   selectInput(geom_id, "Geom for this layer:",
                                 choices = c(names(geom_aesthetics)),
                                 selected = "geom_blank"),
-                    #img(src="geom_line.png", height = 200, width = 200),
                     imageOutput(icon_id),
                   
                     wellPanel(
@@ -52,12 +49,7 @@ layer_tab <- tabPanel(
     make_layer(1),
     make_layer(2),
     make_layer(3)
-<<<<<<< HEAD
     )
 )
   
 
-=======
-  )
-)
->>>>>>> 35a47a5c15b691bbcde9d592ddf7f6f31b58ef74

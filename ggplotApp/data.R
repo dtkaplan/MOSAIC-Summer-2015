@@ -1,6 +1,3 @@
-library(shiny)
-library(mosaic)
-
 choose_data_source <- radioButtons(
   inputId="file_or_package", 
   label = NULL,

@@ -4,6 +4,59 @@ author: "Mengdie"
 date: "6/16/2015"
 output: html_document
 ---
+#library(DCF)   #DCF not available for R.3.02
+# The difference between aes and aes_string
+# Write a function that could scrape the shape file from the website and fortify the shape file and pass to user
+
+```{r}
+ours <- CountryData %>% select(id=country, fert)  
+all <- left_join(world.f, ours)
+FIPS <- foreign::read.dbf(
+  file = "WorldCountries/world_country_admin_boundary_shapefile_with_fips_codes.dbf",
+  as.is = TRUE)
+
+#Plot Syntax
+ggplot(world.f, aes(x=long, y=lat, group=group)) + geom_path()
+ggplot(all, aes(x=long, y=lat, group=group)) + geom_polygon(aes(fill=fert))
+ggmap(get_map(location = "University of Washington", source = "google", maptype = "roadmap"))
+```
+
+```{r}
+# Can't subset from a list using character string
+
+map_opts <- list(
+   stamen_opts = list("terrain", "toner", "watercolor"),
+    google_opts = list ("roadmap", "terrain", "satellite", "hybrid") 
+)
+
+map_opts[["stamen_opts"]] # returns NULL
+
+# 
+
+datasets  <- list ("China" = China.f, "World" = world.f)
+datasets [["China"]]
+
+#Use switch statement to update one select input based on another
+observe({   
+    stamen <- list("terrain", "toner", "watercolor")
+    google <- list ("roadmap", "terrain", "satellite", "hybrid") 
+    
+    #input$map_source must be character string
+    relevant <- switch(input$map_source,
+                       "stamen" = stamen,
+                       "google" = google            
+    )       
+    
+    updateSelectInput(session, inputId = "map_type",
+                      choices = relevant
+    )
+  })
+
+
+```
+
+
+
 
 ```{r}
 install.packages(c("rgeos", "gpclib", "maptools", "sp"))
