@@ -24,18 +24,21 @@ shinyUI(fluidPage(
         
         conditionalPanel(condition = "input.plotFun == '1'",
                          selectInput("data_source","Please choose a dataset",
-                                     choices = list("None", "China","World","London"),
-                                     selected = "None")
+                                     choices = list("None", "China","London"),
+                                     selected = "None"),
+                         selectInput("geom1", "Choose a geom for this layer:",
+                                     choices = 
+                                       c("None",names(geom_aesthetics)),
+                                     selected = "geom_map")
         ),
         
         conditionalPanel(condition = "input.plotFun == '2'", 
                          textInput("location", "Please type a location you want", value = ""),
                          selectInput("map_source", "Choose a map source:", 
                                      choices = list("None", "stamen", "google", "osm"), selected = "None"),
-                         selectInput("map_type", "Choose a map type:", choices = "") 
-        ),
-        
-        actionButton("make_plot", "Plot the map")
+                         selectInput("map_type", "Choose a map type:", choices = ""),
+                         textInput("zoom_num", "Please enter a number from 1 - 21 to zoom in ")
+        )
 
       ),
       
@@ -43,11 +46,9 @@ shinyUI(fluidPage(
         selectInput("data_to_join","Choose a data to join", choices = list("None", "China Pop", "London Sports"),
                     selected = "None"
                     ),
-        selectInput("geom1", "Choose a geom for this layer:",
-                    choices = 
-                      c(names(geom_aesthetics)),
-                    selected = "geom_map"),
-        selectInput("fill_var", "Choose a variable to fill with", choices = "any")
+        selectInput("fill_var", "Choose a variable to fill with", choices = "any"),
+        br()
+        # actionButton("make_plot", "Plot the map!")
         # tableOutput("disp_aes_1"),
 #         wellPanel(
 #           selectInput("map1", "Map aesthetic:", 
