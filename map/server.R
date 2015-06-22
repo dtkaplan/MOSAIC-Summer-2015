@@ -5,24 +5,24 @@
 #setwd("~/MOSAIC-Summer-2015/map")
 
 # #China Data
-# China <- rgdal::readOGR(dsn = "www/China", "CopyOfch")
-# China.f <- ggplot2::fortify(China, region = "ADMIN_NAME")
+China <- rgdal::readOGR(dsn = "www/China", "CopyOfch")
+China.f <- ggplot2::fortify(China, region = "ADMIN_NAME")
 # 
 # # World Map Data
-# world <- rgdal::readOGR(dsn = "www/WorldCountries", "CopyOfworld_country_admin_boundary_shapefile_with_fips_codes")
-# world.f <- ggplot2::fortify(world, region = "CNTRY_NAME")    #Convert to a form suited to ggplot
+world <- rgdal::readOGR(dsn = "www/World", "CopyOfworld_country_admin_boundary_shapefile_with_fips_codes")
+world.f <- ggplot2::fortify(world, region = "CNTRY_NAME")    #Convert to a form suited to ggplot
 # 
 #London data
-# Read in the shapefile
-# sport <- rgdal::readOGR(dsn = "www/London", "london_sport")
+sport <- rgdal::readOGR(dsn = "www/London", "CopyOflondon_sport")
 # # fixes an error in the london_sport file
-# proj4string(sport) <- CRS("+init=epsg:27700")
-# sport.f <- ggplot2::fortify(sport, region = "ons_label")
-# sport.f <- merge(sport.f, sport@data, by.x = "id", by.y = "ons_label")
-# sport.wgs84 <- spTransform(sport, CRS("+init=epsg:4326"))   #shape file
-# sport.wgs84.f <- fortify(sport.wgs84, region = "ons_label")
-# sport.wgs84.f <- merge(sport.wgs84.f, sport.wgs84@data, by.x = "id", by.y = "ons_label")
-# 
+proj4string(sport) <- CRS("+init=epsg:27700")
+sport.wgs84 <- spTransform(sport, CRS("+init=epsg:4326"))   #shape file
+sport.wgs84.f <- fortify(sport.wgs84, region = "ons_label")
+sport.wgs84.f <- left_join(sport.wgs84.f, sport.wgs84@data, by = c("id" = "ons_label"))
+
+# p <- ggmap(get_map(location = "london", zoom = 10, source = "google", maptype = "roadmap", crop=FALSE) )
+# pp <- p + geom_polygon(data = sport.wgs84.f, aes_string(x="long", y="lat",group = "group",fill = "Partic_Per"))
+# ppp<-p + geom_path(data = sport.wgs84.f, aes_string(x="long", y="lat",group = "group",fill = "Partic_Per.x"), size = 1, color = "blue")
 
 data1 <- list ("China" = China.f, "World" = world.f, "London" = sport.wgs84.f)
 data2 <- list ("China Pop" = China@data, "London Sports" = sport.wgs84@data)
@@ -49,6 +49,9 @@ shinyServer(function(input, output, session) {
   })
 #   
 #   
+
+
+# ================= tileOutput ============================================  
   # Let user choose from different maps    
   observe({   
     stamen <- list("terrain", "toner", "watercolor")
@@ -65,27 +68,27 @@ shinyServer(function(input, output, session) {
     )
     
   })
-
-# ================= tileOutput ============================================  
-  output$tileOutput <- renderPlot({
-    if(is.null(input$location) || input$map_source == "None") {
-      # make a bogus plot --- with text geom saying "Choose the stuff you need."
-      # ggplot() + 
-    } 
-    else {
-      p <- ggmap(get_map(location = input$location, zoom = input$zoom_num,
-                         source = input$map_source, maptype = input$map_type, crop=FALSE) 
-      )
-    }
-    
-    return (p)
+  
+  ggmap_frame <- reactive({
+    p <- ggmap(get_map(location = input$location, zoom = input$zoom_num,
+                       source = input$map_source, maptype = input$map_type, crop=FALSE))
+               
+    p
   })
   
   
+  output$tileOutput <- renderPlot({
+    if(is.null(input$location) || input$map_source == "None") {
+      # make a bogus plot --- with text geom saying "Choose the stuff you need."
+      # 
+    } 
+    else {
+     ggmap_frame()  # don't need return??
+    }
+  })
+  
   # ================= shapeOutput ============================================  
-  frame_for_plot <- reactive({
-    #browser()
-    # DC <- data1[[input$data_source]]
+  ggplot_frame <- reactive({
     DC <- data_chosen()
     if (is.null(DC)) return(NULL)
     else {  p <- ggplot(data = DC,
@@ -96,21 +99,22 @@ shinyServer(function(input, output, session) {
   })
   
   output$shapeOutput <- renderPlot({
-    #browser()
-    if(input$data_source == "None" || input$geom1 == "None") {
+    if(shape_not_ready()) {
       # make a bogus plot --- with text geom saying "Choose the stuff you need."
     } 
     else {
       if (input$geom1 == "geom_path")
-        P <- frame_for_plot() + geom_path()
+        P <- ggplot_frame() + geom_path()
       if (input$geom1 == "geom_polygon")
-        P<- frame_for_plot() + geom_polygon()
+        P<- ggplot_frame() + geom_polygon()
       P
     }
   })
   
-  
 # ====================== entityOutput =========================
+  shape_not_ready <- reactive({
+    input$data_source == "None" || input$geom1 == "None"
+  })
   
     observe({
       DC <- data2[[input$data_to_join]]
@@ -120,25 +124,49 @@ shinyServer(function(input, output, session) {
       )
       
     })
+    
+    ggmap_geom <- reactive({
+      if (input$geomEnt == "geom_polygon"){
+        geom <- geom_polygon(data = data_chosen(), aes_string(x="long", y="lat",group = "group",fill = input$fill_var))
+      }
+      if (input$geomEnt == "geom_path"){
+        geom <- geom_path(data = data_chosen(), aes_string(x="long", y="lat",group = "group")) #implement color and size (color = input$col, size = input$size)
+      }
+      
+      geom
+    })
    
+    ggplot_geom <- reactive({
+      if (input$geomEnt == "geom_path"){ 
+        p <- geom_path()}
+      if (input$geomEnt == "geom_polygon") {
+        p <- geom_polygon(aes_string(fill = input$fill_var))
+      }
+    })   
+    
   output$entityOutput <- renderPlot({
     # HOW TO Make entity data dependent on shapeOutput??
-#     if (is.null(output$shapeOutput)){
-#       print("warning message: you need a shape as a frame in order to plot entity data")
-#     }
+    if (shape_not_ready()){
+      # USE A TEXTINPUT TO SHOW ERROR MESSAGE
+    }
     
     if (input$data_to_join == "None"){
+      # USE A TEXTINPUT TO SHOW ERROR MESSAGE 
       print("Please choose a dataset to join")
     }
-   
-    if (input$geomEnt == "geom_path"){ 
-      p <- frame_for_plot() + geom_path()}
-    if (input$geomEnt == "geom_polygon") {
-      p <- frame_for_plot() + geom_polygon(aes_string(fill = input$fill_var))
+    
+    if (input$display_tile){
+      p <- ggmap_frame() + ggmap_geom()
+    } else{
+#      browser()
+      p <- ggplot_frame() + ggplot_geom()
     }
     p
     
   })
+  
+  
+  
   
   #=================== positionOutput ===================
   
