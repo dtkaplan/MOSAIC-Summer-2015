@@ -48,8 +48,8 @@ entity <- tabPanel("Entity Data",
                                           choices = 
                                             c("None",names(geom_aesthetics)),
                                           selected = "geom_map"),
-                              selectInput("fill_var", "Choose a variable to fill with", choices = "any")
-                              
+                              selectInput("fill_var", "Choose a variable to fill with", choices = "any"),
+                              checkboxInput("display_tile", "Click if you want to display tile", value = FALSE)
                             )),
                      column(6, 
                             plotOutput("entityOutput"))
