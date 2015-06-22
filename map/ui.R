@@ -4,13 +4,14 @@ library(dplyr)
 library(mosaicData)
 library(shinythemes)
 
-tile <- tabPanel(tile,
+tile <- tabPanel("Tile",
                   column(4, 
                          wellPanel(
                            textInput("location", "Please type a location you want", value = ""),
                            selectInput("map_source", "Choose a map source:", 
                                        choices = list("None", "stamen", "google", "osm"), selected = "None"),
-                           selectInput("map_type", "Choose a map type:", choices = "") 
+                           selectInput("map_type", "Choose a map type:", choices = ""),
+                           sliderInput("zoom_num", "Please adjust the sliderbar to zoom in", min = 1, max = 21, value = 10)
                            
                            
                          )),
@@ -19,7 +20,7 @@ tile <- tabPanel(tile,
                          plotOutput("tileOutput"))
 )
 
-shape <- tabPanel(shape,
+shape <- tabPanel("Shape",
                    column(4, 
                           wellPanel(
                             selectInput("data_source","Please choose a dataset",
@@ -29,15 +30,30 @@ shape <- tabPanel(shape,
                                         choices = 
                                           c("None",names(geom_aesthetics)),
                                         selected = "geom_map")
+
                             
                           )),
                    
                    column(6, 
-                          plotOutput("tileOutput"))
+                          plotOutput("shapeOutput"))
 )
 
-
-
+entity <- tabPanel("Entity Data",
+                     column(4, 
+                            wellPanel(
+                              selectInput("data_to_join","Choose a data to join", choices = list("None", "China Pop", "London Sports"),
+                                          selected = "None"
+                              ),
+                              selectInput("geomEnt", "Choose a geom for this layer:",
+                                          choices = 
+                                            c("None",names(geom_aesthetics)),
+                                          selected = "geom_map"),
+                              selectInput("fill_var", "Choose a variable to fill with", choices = "any")
+                              
+                            )),
+                     column(6, 
+                            plotOutput("entityOutput"))
+)
 
 
 
@@ -47,9 +63,9 @@ shinyUI(
               tabPanel("Have fun with the maps",
                        tabsetPanel(
                        tile,
-                       shape
+                       shape,
 #                        positionData,
-#                        entityData
+                       entity
                          
                        )
                        
