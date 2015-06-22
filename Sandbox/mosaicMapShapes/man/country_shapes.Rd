@@ -19,11 +19,11 @@ There are two data tables for each country: a shape file and a data file.  The \
 \details{
 The countries:
 \describe{
-  \item{\code{af} Afghanistan}
-  \item{\code{ag} Angola}
-  \item{\code{ca} Canada}
-  \item{\code{ch} China}
-  \item{\code{mx} Mexico}
+  \item{\code{af}}{Afghanistan}
+  \item{\code{ag}}{Angola}
+  \item{\code{ca}}{Canada}
+  \item{\code{ch}}{China}
+  \item{\code{mx}}{Mexico}
   \item{To do}{List the others as well here }
 
 }
