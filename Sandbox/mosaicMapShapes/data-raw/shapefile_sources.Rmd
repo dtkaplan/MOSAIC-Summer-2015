@@ -19,6 +19,7 @@ Files have the form <ftp://ftp.cdc.gov/pub/software/epi_info/epiinfo/shapefiles/
 Need to download the `.exe` file, then run `unzip` on it.
 ```{r}
 CDC_shape_files <- c(
+  "ftp://ftp.cdc.gov/pub/software/epi_info/epiinfo/shapefiles/asia/ch.exe", # China
   "ftp://ftp.cdc.gov/pub/software/epi_info/epiinfo/shapefiles/africa/ag.exe", # Algeria
   "ftp://ftp.cdc.gov/pub/software/epi_info/epiinfo/shapefiles/africa/ao.exe", # Angola
   "ftp://ftp.cdc.gov/pub/software/epi_info/epiinfo/shapefiles/africa/KE.exe", # Kenya
@@ -35,7 +36,7 @@ CDC_shape_files <- c(
   
 where <- tempdir()
 
-for (exe_file in CDC_shape_files) {
+for (exe_file in CDC_shape_files[1]) {
 
 #  exe_file <- "ftp://ftp.cdc.gov/pub/software/epi_info/epiinfo/shapefiles/africa/ag.exe"
 dest_file <- paste(where, 'shapefile.zip', sep = "/")
