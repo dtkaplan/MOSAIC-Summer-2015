@@ -7,7 +7,9 @@
 # #China Data
 China <- rgdal::readOGR(dsn = "www/China", "CopyOfch")
 China.f <- ggplot2::fortify(China, region = "ADMIN_NAME")
-# 
+China_pop <- read.csv("~/MOSAIC-Summer-2015/map/www/China/China Provincial Pop.csv")
+
+
 # # World Map Data
 world <- rgdal::readOGR(dsn = "www/World", "CopyOfworld_country_admin_boundary_shapefile_with_fips_codes")
 world.f <- ggplot2::fortify(world, region = "CNTRY_NAME")    #Convert to a form suited to ggplot
@@ -170,6 +172,17 @@ shinyServer(function(input, output, session) {
   
   #=================== positionOutput ===================
   
+  output$positionOutput <- renderPlot({
+    
+    if (input$pos_data == "None") {
+      print("Please choose a dataset to plot")
+    }
+    
+    if (input$geomPos == "geom_point") {
+      p <- ggmap_frame() + geom_point(data = China_pop, aes_string(x = "lon", y = "lat",  size = "POP_ADMIN"), color = "blue")
+    }
+    p
+  })
   
   
   
