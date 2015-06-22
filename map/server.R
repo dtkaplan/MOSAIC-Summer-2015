@@ -22,10 +22,6 @@ sport.wgs84 <- spTransform(sport, CRS("+init=epsg:4326"))   #shape file
 sport.wgs84.f <- fortify(sport.wgs84, region = "ons_label")
 sport.wgs84.f <- left_join(sport.wgs84.f, sport.wgs84@data, by = c("id" = "ons_label"))
 
-# p <- ggmap(get_map(location = "london", zoom = 10, source = "google", maptype = "roadmap", crop=FALSE) )
-# pp <- p + geom_polygon(data = sport.wgs84.f, aes_string(x="long", y="lat",group = "group",fill = "Partic_Per"))
-# ppp<-p + geom_path(data = sport.wgs84.f, aes_string(x="long", y="lat",group = "group",fill = "Partic_Per.x"), size = 1, color = "blue")
-
 data1 <- list ("China" = China.f, "World" = world.f, "London" = sport.wgs84.f)
 data2 <- list ("China Pop" = China@data, "London Sports" = sport.wgs84@data)
 
@@ -44,14 +40,14 @@ shinyServer(function(input, output, session) {
         data_joined <- left_join(tmp1, tmp2, by = c("id" = "ADMIN_NAME"))
       }
       if(input$data_to_join == "London Sports"){
-        data_joined<- left_join(tmp1, tmp2, by = c("id" = "ons_label"))
+#        browser()
+        data_joined <- left_join(tmp1, tmp2, by = c("id" = "ons_label"))
       }
       data_joined
     }
   })
 #   
 #   
-
 
 # ================= tileOutput ============================================  
   # Let user choose from different maps    
@@ -74,7 +70,7 @@ shinyServer(function(input, output, session) {
   ggmap_frame <- reactive({
     p <- ggmap(get_map(location = input$location, zoom = input$zoom_num,
                        source = input$map_source, maptype = input$map_type, crop=FALSE))
-               
+#    browser()           
     p
   })
   
@@ -96,6 +92,7 @@ shinyServer(function(input, output, session) {
     else {  p <- ggplot(data = DC,
                         aes_string(x="long", y="lat",group = "group"
                         ))} 
+#    browser()
     p
 
   })
@@ -119,7 +116,7 @@ shinyServer(function(input, output, session) {
   })
   
     observe({
-      DC <- data2[[input$data_to_join]]
+      DC <- data1[[input$data_source]]
       #     if (is.null(DC)) return(NULL)
       updateSelectInput(session, inputId = "fill_var",
                         choices = names(DC)
@@ -140,10 +137,11 @@ shinyServer(function(input, output, session) {
    
     ggplot_geom <- reactive({
       if (input$geomEnt == "geom_path"){ 
-        p <- geom_path()}
+        geom <- geom_path()}
       if (input$geomEnt == "geom_polygon") {
-        p <- geom_polygon(aes_string(fill = input$fill_var))
+       geom <- geom_polygon(aes_string(fill = input$fill_var))
       }
+      geom
     })   
     
   output$entityOutput <- renderPlot({
@@ -166,9 +164,7 @@ shinyServer(function(input, output, session) {
     p
     
   })
-  
-  
-  
+
   
   #=================== positionOutput ===================
   
@@ -183,7 +179,6 @@ shinyServer(function(input, output, session) {
     }
     p
   })
-  
   
   
   
