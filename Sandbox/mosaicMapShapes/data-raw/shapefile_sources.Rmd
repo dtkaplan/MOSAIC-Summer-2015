@@ -1,0 +1,63 @@
+---
+title: "Sources for Shapefile Data"
+author: "Danny Kaplan"
+date: "June 22, 2015"
+output: html_document
+---
+
+The shapefiles in this directory ...
+
+
+Got shapefile from [Geocommons](http://geocommons.com/overlays/33578.html), but a more extensive set is from the
+
+# CDC Shapefiles
+
+[CDC](http://wwwn.cdc.gov/epiinfo/html/shapefiles.htm)
+
+Files have the form <ftp://ftp.cdc.gov/pub/software/epi_info/epiinfo/shapefiles/africa/ag.exe>, which is for Algeria.
+
+Need to download the `.exe` file, then run `unzip` on it.
+```{r}
+CDC_shape_files <- c(
+  "ftp://ftp.cdc.gov/pub/software/epi_info/epiinfo/shapefiles/africa/ag.exe", # Algeria
+  "ftp://ftp.cdc.gov/pub/software/epi_info/epiinfo/shapefiles/africa/ao.exe", # Angola
+  "ftp://ftp.cdc.gov/pub/software/epi_info/epiinfo/shapefiles/africa/KE.exe", # Kenya
+  "ftp://ftp.cdc.gov/pub/software/epi_info/epiinfo/shapefiles/antcra/AY.exe", # Antarctica
+  "ftp://ftp.cdc.gov/pub/software/epi_info/epiinfo/shapefiles/asia/af.exe", # Afghanistan
+  "ftp://ftp.cdc.gov/pub/software/epi_info/epiinfo/shapefiles/asia/kz.exe", # Kazhakhstan
+  "ftp://ftp.cdc.gov/pub/software/epi_info/epiinfo/shapefiles/australia/AS.exe", # Australia
+  "ftp://ftp.cdc.gov/pub/software/epi_info/epiinfo/shapefiles/europe/BE.exe", # Belgium
+  "ftp://ftp.cdc.gov/pub/software/epi_info/epiinfo/shapefiles/europe/IC.exe", # Iceland
+  "ftp://ftp.cdc.gov/pub/software/epi_info/epiinfo/shapefiles/namer/CA.exe", # Canada
+  "ftp://ftp.cdc.gov/pub/software/epi_info/epiinfo/shapefiles/namer/MX.exe" # Mexico  # Remember to remove the comma after the last in the list
+)
+  
+  
+where <- tempdir()
+
+for (exe_file in CDC_shape_files) {
+
+#  exe_file <- "ftp://ftp.cdc.gov/pub/software/epi_info/epiinfo/shapefiles/africa/ag.exe"
+dest_file <- paste(where, 'shapefile.zip', sep = "/")
+download.file(url = exe_file,
+              destfile = dest_file,
+              method = 'curl')
+unzip(zipfile = dest_file, exdir = where)
+tmp <- nchar(exe_file)
+country_code <- tolower(substr(exe_file, tmp-5, tmp-4))
+shapes <- rgdal::readOGR(dsn = where, country_code) # put country name here
+id_variable <- "GMI_ADMIN"
+country_shapes <- ggplot2::fortify(shapes, region=id_variable)
+country_data <- foreign::read.dbf(paste0(where, "/", 
+                                         country_code, ".dbf" ))
+country_data$id <- country_data[[id_variable]]
+assign(paste0(country_code, "_shapes"), country_shapes)
+assign(paste0(country_code, '_data'), country_data)
+do.call("save", 
+        as.list(c(ls( pattern=paste0("^", country_code, 
+                                     "_(shapes|data)$")),
+                      file=paste0(country_code, "_shapefile.rda"))))
+}
+
+
+```
