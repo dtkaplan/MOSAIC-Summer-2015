@@ -56,6 +56,20 @@ entity <- tabPanel("Entity Data",
 )
 
 
+position <- tabPanel("Position Data",
+                   column(4, 
+                          wellPanel(
+                            selectInput("pos_data","Choose a data to plot", choices = list("None", "China Province Pop"),
+                                        selected = "None"
+                            ),
+                            selectInput("geomPos", "Choose a geom for this layer:",
+                                        choices = 
+                                          c("None",names(geom_aesthetics)),
+                                        selected = "geom_point")
+                          )),
+                   column(6, 
+                          plotOutput("positionOutput"))
+)
 
 shinyUI( 
   navbarPage( "ProjectMosaic!", 
@@ -64,7 +78,7 @@ shinyUI(
                        tabsetPanel(
                        tile,
                        shape,
-#                        positionData,
+                       position,
                        entity
                          
                        )
