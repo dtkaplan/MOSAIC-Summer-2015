@@ -1,6 +1,6 @@
 # Name aesthetics for each geom type:
 
-library(mosaicData)
+library(mosaicData) 
 
 # Available datasets
 # CHANGE THIS logic to pull from any of a list of packages.
@@ -16,14 +16,12 @@ geom_aesthetics <- list(
   geom_bar   = list(x = "any", color = "few", alpha = "num_or_few", fill = "few",
                     linetype = "few", size ="num_or_few", weight = "num_or_few"),
   geom_hline = list(x = "any", y = "any", alpha = "num_or_few", color = "num_or_few",
-                    linetype = "few",size = "num_or_few"),
+                    linetype = "few",size = "num_or_few", yintercept = "any"),
   geom_vline = list(x = "any", y = "any", alpha = "num_or_few", color = "num_or_few",
                     linetype = "few",size = "num_or_few"),
-  geom_abline = list(x = "any", y = "any", alpha = "num_or_few", color = "num_or_few", 
-                     linetype = "few", size = "num_or_few"),
-  geom_smooth = list(x = "any", y = "any", color = "few", alpha = "num",
-                     size = "num_or_few", linetype = "few", fill = "few", weight = "num_or_few"),
-  geom_blank = list(x = "any", y = "any")
+  geom_abline = list(x = "any", y = "any", alpha = "num_or_few", color = "num_or_few",
+                    linetype = "few",size = "num_or_few"),
+  geom_blank = list(x="any", y="any")
 )
 
 # Storage for the frame
@@ -37,10 +35,8 @@ frame_def <<- reactiveValues(
   facet_y = NULL
 )
 
-# Helper functions
-
+# Storage for layers
 layer_n_values <<- function(n){
-  
   reactiveValues(
     layer = n,
     data = NULL,
@@ -50,9 +46,9 @@ layer_n_values <<- function(n){
                      role=rep("variable",2), 
                      stringsAsFactors=FALSE)
   )
-  
 }
 
+# Helper functions
 
 # Turn the layer values into something suited to do.call() in making plot.
 make_geom_argument_list <- function(values) {

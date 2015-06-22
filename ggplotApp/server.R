@@ -10,9 +10,35 @@ library(mosaicData)
 # JUST FOR DEBUGGING
 shinyServer(function(input, output, session) {
 
-  layer_1_values <- layer_n_values(1)
+  layer_1_values <- layer_n_values(1)  
   layer_2_values <- layer_n_values(2)
   layer_3_values <- layer_n_values(3)
+
+  #Display icon for the geom chosen. Images files are stored in the 'www' folder, and named after the geoms.
+  output$icon1 <- renderImage({
+    filename <- normalizePath(file.path('./www',
+                                        paste(input$geom1, '.png', sep='')))
+    
+    list(src = filename,
+         height = 250, width = 250)
+  }, deleteFile = FALSE)
+
+  output$icon2 <- renderImage({
+    filename <- normalizePath(file.path('./www',
+                                        paste(input$geom2, '.png', sep='')))
+    
+    list(src = filename,
+         height = 250, width = 250)
+  }, deleteFile = FALSE)
+  
+  output$icon3 <- renderImage({
+    filename <- normalizePath(file.path('./www',
+                                        paste(input$geom3, '.png', sep='')))
+    
+    list(src = filename,
+         height = 250, width = 250) 
+  }, deleteFile = FALSE)
+
 
   # ===============================
   # Data reading reactives
@@ -26,7 +52,6 @@ shinyServer(function(input, output, session) {
     if(input$random_subset){ # grab a random subset
       Tmp <- dplyr::sample_n(Tmp, size=input$random_subset_nrow)
     }
-    
     Tmp    
   })
   
@@ -38,27 +63,38 @@ shinyServer(function(input, output, session) {
       Dataset <- read.csv(input$data_own$datapath, #data.table::fread(), readr::readr()
                           stringsAsFactors=FALSE)
     }
-    
     Dataset
   })  
   
   data_name <- reactive({
-    input$package_data_name    
-    # CHANGE NEEDED
-    # This needs to be changed to get the name of the csv file, if that's how data were loaded.
-    #     input$data_own$name   #The filename provided by the web browser 
+    #Get data name for both uploaded file and data from existing datasets
+    if(is.null(input$data_own)){
+      input$package_data_name 
+    } else {
+      input$data_own
+    } 
   })
   
   # ===================================
   # Interface between UI and plotting data structures and logic
-  #
+  
+  # Update Datasets
   observe({
     this_dataset() # for the dependency if data changes
     frame_def$x <<- input$frame_x
     frame_def$y <<- input$frame_y
   })
   
+  #Update Frame
+  observe({ # put the data into frame_def$data
+    data_name <- data_name()
+    frame_def$data <<- this_dataset()
+    frame_def$data_name <<- data_name
+    updateSelectInput(session, "frame_x", choices=names(frame_def$data))
+    updateSelectInput(session, "frame_y", choices=names(frame_def$data))
+  })
   
+  #Update Layer 1
   observe({ # the geom has been set or changed
     if(frame_def$x != "bogus x") {
       # remember, assignment is <<- for assignment at higher level        
@@ -71,10 +107,7 @@ shinyServer(function(input, output, session) {
       relevant <- geom_aesthetics[[input$geom1]]
       new_aes_table <<- 
         new_aes_table_helper(names(relevant), old)
-      
-      # update the choices for mapping and setting
-      updateSelectInput(session, inputId="map1",
-                        choices = names(relevant))
+
       # Get names from frame data or, if it's set, layer data
       variable_names <- if (is.null(layer_1_values$data)) names(frame_def$data)
       else names(layer_1_values$data)
@@ -85,7 +118,8 @@ shinyServer(function(input, output, session) {
       new_aes_table$value[y_ind] <- frame_def$y
       new_aes_table$role[x_ind] <- "variable"
       new_aes_table$role[y_ind] <- "variable"
-      # More control updates
+      
+      # update the choices for mapping and setting
       updateSelectInput(session, inputId="var1",
                         choices = c(variable_names,
                                     "none of them"))
@@ -254,7 +288,7 @@ shinyServer(function(input, output, session) {
   })
   
   
-  # ===================================
+  # =============================================
   # Display outputs
   
   # fill in the display in the data selection panel
@@ -263,15 +297,6 @@ shinyServer(function(input, output, session) {
   output$disp_aes_1 <- renderTable(layer_1_values$aes)
   output$disp_aes_2 <- renderTable(layer_2_values$aes)
   output$disp_aes_3 <- renderTable(layer_3_values$aes)
-
-  
-  observe({ # put the data into frame_def$data
-    data_name <- data_name()
-    frame_def$data <<- this_dataset()
-    frame_def$data_name <<- data_name
-    updateSelectInput(session, "frame_x", choices=names(frame_def$data))
-    updateSelectInput(session, "frame_y", choices=names(frame_def$data))
-  })
   
   layer_1_glyphs <- reactive({
     args <- make_geom_argument_list(layer_1_values$aes)
