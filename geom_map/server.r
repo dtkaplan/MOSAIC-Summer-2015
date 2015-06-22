@@ -2,6 +2,16 @@
 # install.packages(x)
 # lapply (x,library,character.only=TRUE)
 
+#London data
+# Read in the shapefile
+sport <- rgdal::readOGR(dsn = "www/London", "london_sport")
+# fixes an error in the london_sport file
+proj4string(sport) <- CRS("+init=epsg:27700")
+sport.f <- ggplot2::fortify(sport, region = "ons_label")
+sport.f <- merge(sport.f, sport@data, by.x = "id", by.y = "ons_label")
+sport.wgs84 <- spTransform(sport, CRS("+init=epsg:4326"))   #shape file
+sport.wgs84.f <- fortify(sport.wgs84, region = "ons_label")
+sport.wgs84.f <- merge(sport.wgs84.f, sport.wgs84@data, by.x = "id", by.y = "ons_label")
 
 #China Data
 China <- rgdal::readOGR(dsn = "www/China", "ch")
@@ -10,7 +20,7 @@ China.f <- ggplot2::fortify(China, region = "ADMIN_NAME")
 # World Map Data
 world <- rgdal::readOGR(dsn = "www/WorldCountries", "world_country_admin_boundary_shapefile_with_fips_codes")
 world.f <- ggplot2::fortify(world, region = "CNTRY_NAME")    #Convert to a form suited to ggplot
-
+  
 data1 <- list ("China" = China.f, "London" = sport.wgs84.f)
 data2 <- list ("China Pop" = China@data, "London Sports" = sport.wgs84@data)
 

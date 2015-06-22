@@ -52,4 +52,7 @@ layer_tab <- tabPanel(
     )
 )
   
+<<<<<<< HEAD
+=======
 
+>>>>>>> 583c5dc278787ef4633282a35ef8cacbb2a3b220
