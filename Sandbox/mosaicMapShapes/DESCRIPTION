@@ -8,3 +8,6 @@ Maintainer: Daniel Kaplan <kaplan@macalester.edu>
 Description: Collects together some commonly used shape files for geography: countries, counties, etc.
 License: CC0
 LazyData: TRUE
+Uses: rgdal, foreign, ggplot2
+Suggests: knitr
+VignetteBuilder: knitr
