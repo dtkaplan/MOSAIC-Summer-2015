@@ -17,16 +17,7 @@ There are two data tables for each country: a shape file and a data file.  The \
   The datafile ... FILE THIS IN
 }
 \details{
-The countries:
-\describe{
-  \item{\code{af}}{Afghanistan}
-  \item{\code{ag}}{Angola}
-  \item{\code{ca}}{Canada}
-  \item{\code{ch}}{China}
-  \item{\code{mx}}{Mexico}
-  \item{To do}{List the others as well here }
-
-}
+For a listing of the available shapefiles, use \code{list_shapefiles()}.
 }
 \source{
 %%  ~~ reference to a publication or URL from which the data were obtained ~~
