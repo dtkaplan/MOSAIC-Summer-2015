@@ -1,0 +1,32 @@
+---
+title: "Examples of Maps with mosaicMapShapes"
+author: "Daniel Kaplan"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r}
+library(mosaicMapShapes)
+library(ggplot2)
+```
+
+You can get a listing of the available shapefiles.
+```{r}
+list_shapefiles()$name
+```
+
+There are two data tables associated with each name, one called 
+* `[name]_shapes` the shapefile itself.  The entity identifier is always named `id`.
+* `[name]_data` which contains information about the entities themselves.  Often, you can use this to merge in a more descriptive identifier (e.g. country names) and it often contains information about other codes used for that identifier. 
+
+The shapefiles are ready for plotting, e.g.
+
+```{r out.width="100%", dpi=500}
+ggplot(World_rivers_shapes, aes(x=long, y=lat, group=group)) +
+  geom_path(color="blue") + 
+  geom_path(data=World_shapes)
+```
