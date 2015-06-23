@@ -11,9 +11,12 @@ tile <- tabPanel("Tile",
                            selectInput("map_source", "Choose a map source:", 
                                        choices = list("None", "stamen", "google", "osm"), selected = "None"),
                            selectInput("map_type", "Choose a map type:", choices = ""),
-                           sliderInput("zoom_num", "Please adjust the sliderbar to zoom in", min = 1, max = 21, value = 10)
-                           
-                           
+                           sliderInput("zoom_num", "Please adjust the sliderbar to zoom in", min = 1, max = 21, value = 10),
+                           p("Zoom is an number from 3 (continent) to 21 (building), 
+                             default value 10 (city). OpenStreetMaps limits a zoom of 18, 
+                             and the limit on stamen maps depends on the maptype.")
+              
+        
                          )),
                   
                   column(6, 
@@ -39,20 +42,26 @@ shape <- tabPanel("Shape",
 )
 
 entity <- tabPanel("Entity Data",
-                     column(4, 
+                   column(4, 
+                          wellPanel(
+                            selectInput("data_to_join","Choose a data to join", choices = list("None", "China Pop", "London Sports"),
+                                        selected = "None"
+                            ),
+                            selectInput("geomEnt", "Choose a geom for this layer:",
+                                        choices = 
+                                          c("None",names(geom_aesthetics)),
+                                        selected = "geom_map"),
+                            selectInput("fill_var", "Choose a variable to fill with", choices = "any"),
+                            checkboxInput("display_tile", "Click if you want to display tile", value = FALSE),
                             wellPanel(
-                              selectInput("data_to_join","Choose a data to join", choices = list("None", "China Pop", "London Sports"),
-                                          selected = "None"
-                              ),
-                              selectInput("geomEnt", "Choose a geom for this layer:",
-                                          choices = 
-                                            c("None",names(geom_aesthetics)),
-                                          selected = "geom_map"),
-                              selectInput("fill_var", "Choose a variable to fill with", choices = "any"),
-                              checkboxInput("display_tile", "Click if you want to display tile", value = FALSE)
-                            )),
-                     column(6, 
-                            plotOutput("entityOutput"))
+                              textInput("col", "Please set the color of the boundary", value = "black"),
+                              sliderInput("size", "Please adjust the map's boundary size", min = 0, max = 8, value = 0.5, step = 0.2 ),
+                              sliderInput("alpha", "Please ajust the map's transparency", min = 0.1, max = 1, value = 0.5, step = 0.1),
+                              textInput("lt", "Please enter a linetype", value = "solid" )
+                            )
+                          )),
+                   column(6, 
+                          plotOutput("entityOutput"))
 )
 
 
@@ -65,7 +74,7 @@ position <- tabPanel("Position Data",
                             selectInput("geomPos", "Choose a geom for this layer:",
                                         choices = 
                                           c("None",names(geom_aesthetics)),
-                                        selected = "geom_point")
+                                        selected = "None")
                           )),
                    column(6, 
                           plotOutput("positionOutput"))
