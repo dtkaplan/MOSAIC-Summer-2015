@@ -5,50 +5,50 @@ library(mosaicData)
 library(shinythemes)
 
 tile <- tabPanel("Tile",
-                  column(4, 
+                  column(4,
                          wellPanel(
                            textInput("location", "Please type a location you want", value = ""),
-                           selectInput("map_source", "Choose a map source:", 
+                           selectInput("map_source", "Choose a map source:",
                                        choices = list("None", "stamen", "google", "osm"), selected = "None"),
                            selectInput("map_type", "Choose a map type:", choices = ""),
                            sliderInput("zoom_num", "Please adjust the sliderbar to zoom in", min = 1, max = 21, value = 10),
-                           p("Zoom is an number from 3 (continent) to 21 (building), 
-                             default value 10 (city). OpenStreetMaps limits a zoom of 18, 
+                           p("Zoom is an number from 3 (continent) to 21 (building),
+                             default value 10 (city). OpenStreetMaps limits a zoom of 18,
                              and the limit on stamen maps depends on the maptype.")
-              
-        
+
+
                          )),
-                  
-                  column(6, 
+
+                  column(6,
                          plotOutput("tileOutput"))
 )
 
 shape <- tabPanel("Shape",
-                   column(4, 
+                   column(4,
                           wellPanel(
                             selectInput("data_source","Please choose a dataset",
-                                        choices = list("None", "China","World","London"),
+                                        choices = c("None",shapes_lst),
                                         selected = "None"),
                             selectInput("geom1", "Choose a geom for this layer:",
-                                        choices = 
+                                        choices =
                                           c("None",names(geom_aesthetics)),
                                         selected = "geom_map")
 
-                            
+
                           )),
-                   
-                   column(6, 
+
+                   column(6,
                           plotOutput("shapeOutput"))
 )
 
 entity <- tabPanel("Entity Data",
-                   column(4, 
+                   column(4,
                           wellPanel(
-                            selectInput("data_to_join","Choose a data to join", choices = list("None", "China Pop", "London Sports"),
+                            selectInput("ent_data_to_join","Choose a entity data to join", choices = c("None", data_lst) ,
                                         selected = "None"
                             ),
                             selectInput("geomEnt", "Choose a geom for this layer:",
-                                        choices = 
+                                        choices =
                                           c("None",names(geom_aesthetics)),
                                         selected = "geom_map"),
                             selectInput("fill_var", "Choose a variable to fill with", choices = "any"),
@@ -60,28 +60,28 @@ entity <- tabPanel("Entity Data",
                               textInput("lt", "Please enter a linetype", value = "solid" )
                             )
                           )),
-                   column(6, 
+                   column(6,
                           plotOutput("entityOutput"))
 )
 
 
 position <- tabPanel("Position Data",
-                   column(4, 
+                   column(4,
                           wellPanel(
-                            selectInput("pos_data","Choose a data to plot", choices = list("None", "China Province Pop"),
+                            selectInput("pos_data_to_join","Choose a position data to join", choices = c("None", data_lst),
                                         selected = "None"
                             ),
                             selectInput("geomPos", "Choose a geom for this layer:",
-                                        choices = 
+                                        choices =
                                           c("None",names(geom_aesthetics)),
                                         selected = "None")
                           )),
-                   column(6, 
+                   column(6,
                           plotOutput("positionOutput"))
 )
 
-shinyUI( 
-  navbarPage( "ProjectMosaic!", 
+shinyUI(
+  navbarPage( "ProjectMosaic!",
               theme = shinytheme("cerulean"),
               tabPanel("Have fun with the maps",
                        tabsetPanel(
@@ -89,12 +89,12 @@ shinyUI(
                        shape,
                        position,
                        entity
-                         
+
                        )
-                       
-              )                 
+
+              )
   )
-  
-)    
+
+)
 
 
