@@ -143,7 +143,7 @@ shinyServer(function(input, output, session) {
         ))
       if (input$geomEnt == "geom_polygon"){
         geom <- geom_polygon(data = data_chosen(), aes_string(x="long", y="lat",group = "group",fill = input$fill_var),
-                             size = input$size, colour = input$col, alpha = input$alpha
+                             size = input$size, colour = input$col, alpha = input$alpha, linetype = input$lt
                              )
       }
       if (input$geomEnt == "geom_path"){
