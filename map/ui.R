@@ -56,9 +56,9 @@ entity <- tabPanel("Entity Data",
                             wellPanel(
                               textInput("col", "Please set the color of the boundary", value = "black"),
                               sliderInput("size", "Please adjust the map's boundary size", min = 0, max = 8, value = 0.5, step = 0.2 ),
-                              sliderInput("alpha", "Please ajust the map's transparency", min = 0.1, max = 1, value = 0.5, step = 0.1),
-                              selectInput("lt", "Please choose a linetype", 
-                                          choices = c("solid","dashed","dotted","dotdash","longdash","twodash"), 
+                              sliderInput("alpha", "Please adjust the map's transparency", min = 0.1, max = 1, value = 0.5, step = 0.1),
+                              selectInput("lt", "Please choose a linetype",
+                                          choices = c("solid","dashed","dotted","dotdash","longdash","twodash"),
                                           selected = "solid" )
                             )
                           )),
@@ -89,9 +89,8 @@ shinyUI(
                        tabsetPanel(
                        tile,
                        shape,
-                       position,
-                       entity
-
+                       entity,
+                       position
                        )
 
               )

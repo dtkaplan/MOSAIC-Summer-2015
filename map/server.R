@@ -5,65 +5,54 @@
 #setwd("~/MOSAIC-Summer-2015/map")
 `%then%` <- shiny:::`%OR%`
 
-# # #China Data
-# China <- rgdal::readOGR(dsn = "www/China", "CopyOfch")
-# China.f <- ggplot2::fortify(China, region = "ADMIN_NAME")
-# China_pop <- read.csv("~/MOSAIC-Summer-2015/map/www/China/China Provincial Pop.csv")
-#
-#
-# # # World Map Data
-# world <- rgdal::readOGR(dsn = "www/World", "CopyOfworld_country_admin_boundary_shapefile_with_fips_codes")
-# world.f <- ggplot2::fortify(world, region = "CNTRY_NAME")    #Convert to a form suited to ggplot
-# #
-# #London data
-# sport <- rgdal::readOGR(dsn = "www/London", "CopyOflondon_sport")
-# # # fixes an error in the london_sport file
-# proj4string(sport) <- CRS("+init=epsg:27700")
-# sport.wgs84 <- spTransform(sport, CRS("+init=epsg:4326"))   #shape file
-# sport.wgs84.f <- fortify(sport.wgs84, region = "ons_label")
-# sport.wgs84.f <- left_join(sport.wgs84.f, sport.wgs84@data, by = c("id" = "ons_label"))
-#
-# data1 <- list ("China" = China.f, "World" = world.f, "London" = sport.wgs84.f)
-# data2 <- list ("China Pop" = China@data, "London Sports" = sport.wgs84@data)
-
-#
-#
-# lst<-data(package="mosaicMapShapes")$results[,"Item"]
-# lst1 <- grepl("_data",lst)
-# data_lst <- list()
-# data_lst <- as.list(lst[lst1])
-# lst2 <- grepl("_shapes",lst)
-# shapes_lst <- as.list(lst[lst2])
-
+lst<-data(package="mosaicMapShapes")$results[,"Item"]
+lst1 <- grepl("_data",lst)
+data_lst <- list()
+data_lst <- as.list(lst[lst1])
+lst2 <- grepl("_shapes",lst)
+shapes_lst <- as.list(lst[lst2])
 
 shinyServer(function(input, output, session) {
 
-#   #A function that returns a datatable based on whether you choose to join a table or not
-  data_chosen <- reactive({
-
+# A function that returns a datatable based on whether you choose to join a table or not
+  ent_data_joined <- reactive({
     validate(
-      need(input$data_source != "None", "A data source must be provided in shape panel")
-      #%then%
-       # need(input$data_to_join!= "None", label = "A dataset to join" )
+      need(input$data_source != "None", "A data source must be provided in shape panel")  %then%
+        need(input$ent_data_to_join != "None", label = "a position dataset")
     )
+     # browser()
+    tmp1 <- get(input$data_source)
 
-   #browser()
-   tmp1 <- get(input$data_source)
-
-    if(input$pos_data_to_join == "None" && input$ent_data_to_join == "None" )
-    {
-      return (tmp1) }
-    else if (input$pos_data_to_join != "None") {
-      tmp2 <- get(input$pos_data_to_join)
-        data_joined <- left_join(tmp1, tmp2, by = "id")
-      }
-    else if (input$ent_data_to_join != "None") {
+   if (input$ent_data_to_join != "None") {
       tmp3 <- get(input$ent_data_to_join)
-      data_joined <- left_join(tmp1, tmp3, by = "id")
+      validate(
+        need(any(unique(tmp1$id) %in% unique(tmp3$id)), "Please choose two datasets that are valid to join")
+        )
+      ent_joined <- left_join(tmp1, tmp3, by = "id")
+      return(ent_joined)
     }
-      data_joined
+  })
+
+  pos_data_joined <- reactive({
+    validate(
+      need(input$data_source != "None", "A data source must be provided in shape panel") %then%
+        need(input$pos_data_to_join != "None", label = "a position dataset")
+    )
+#     browser()
+    tmp1 <- get(input$data_source)
+
+    if (input$pos_data_to_join != "None") {
+      tmp2 <- get(input$pos_data_to_join)
+      validate(
+        need(any(unique(tmp1$id) %in% unique(tmp2$id)), "Please choose two datasets that are valid to join")
+      )
+      pos_joined <- left_join(tmp1, tmp2, by = "id")
+
+    }
+    pos_joined
 
   })
+
 
 
 # ================= tileOutput ============================================
@@ -101,13 +90,13 @@ shinyServer(function(input, output, session) {
 
   # ================= shapeOutput ============================================
   ggplot_frame <- reactive({
-    # DC <- get(input$data_source)
     validate(  #check datasource
       need(input$data_source != "None", label = "a dataset")
     )
 
+    tmp1 <- get(input$data_source)
 
-    p <- ggplot(data = data_chosen(),
+    p <- ggplot(data = tmp1,
                 aes_string(x="long", y="lat",group = "group"
                 ))
     p
@@ -130,9 +119,9 @@ shinyServer(function(input, output, session) {
 # ====================== entityOutput =========================
     observe({
       #browser()
-      data_chosen()
+      ent_data_joined()
       updateSelectInput(session, inputId = "fill_var",
-                        choices = names(data_chosen())  #update not working
+                        choices = names(ent_data_joined())  #update not working
       )
 
     })
@@ -142,34 +131,20 @@ shinyServer(function(input, output, session) {
         need( input$geomEnt != "None", label = "a layer"
         ))
       if (input$geomEnt == "geom_polygon"){
-        geom <- geom_polygon(data = data_chosen(), aes_string(x="long", y="lat",group = "group",fill = input$fill_var),
+        geom <- geom_polygon(data =  ent_data_joined(), aes_string(x="long", y="lat",group = "group",fill = input$fill_var),
                              size = input$size, colour = input$col, alpha = input$alpha, linetype = input$lt
                              )
       }
       if (input$geomEnt == "geom_path"){
-        geom <- geom_path(data = data_chosen(), aes_string(x="long", y="lat",group = "group"),
+        geom <- geom_path(data =  ent_data_joined(), aes_string(x="long", y="lat",group = "group"),
                           size = input$size, colour = input$col, alpha = input$alpha, linetype = input$lt)
-        #implement color and size (color = input$col, size = input$size)
       }
 
       geom
     })
 
-#     ggplot_geom <- reactive({
-#       validate(
-#         need( input$geomEnt != "None", label = "a layer"
-#       ))
-#       browser()
-#       if (input$geomEnt == "geom_path"){
-#         geom <- geom_path()}
-#       if (input$geomEnt == "geom_polygon") {
-#        geom <- geom_polygon(aes_string(fill = input$fill_var))
-#       }
-#       geom
-#     })
-
   output$entityOutput <- renderPlot({
-    data_chosen()
+    ent_data_joined()
     validate(
       need(input$ent_data_to_join != "None", label = "Entity data to join"
     ))
@@ -187,41 +162,17 @@ shinyServer(function(input, output, session) {
   #=================== positionOutput ===================
 
   output$positionOutput <- renderPlot({
+    pos_data_joined()
     validate(
-      need(input$pos_data_to_join != "None", label = "a position dataset") %then%
         need(input$geomPos != "None", label = "a layer")
     )
 
     p <- ggmap_frame()
     if (input$geomPos == "geom_point") {
-      p <- p + geom_point(data = data_chosen(), aes_string(x = "long", y = "lat",  size = "POP_ADMIN"), color = "blue")
+      p <- p + geom_point(data = pos_data_joined(), aes_string(x = "long", y = "lat",  size = "POP_ADMIN"), color = "blue")
     }
     p
   })
-
-
-  ###Error message in UI
-  #   output$errorEntity <- renderUI({
-  #     if (shape_not_ready()) {
-  #       tags$div(style="float:right; padding-right:10px; padding-top:10px;
-  #               color:Red; background-color:white; font-family:arial; font-size:20px",
-  #                "Please first choose a dataset for shape panel")
-  #       }
-  #     if (tile_not_ready()){
-  #       tags$div(style="float:right; padding-right:10px; padding-top:10px;
-  #               color:Red; background-color:white; font-family:arial; font-size:20px",
-  #                "Please first choose a dataset for tile panel")
-  #     }
-  #
-  #   })
-
-  #   shape_not_ready <- reactive({
-  #     input$data_source == "None" || input$geom1 == "None"
-  #   })
-#   tile_not_ready <- reactive({
-#     is.null(input$location) || input$map_source == "None"
-#   })
-#
 
 
 })
