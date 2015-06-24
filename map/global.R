@@ -1,28 +1,13 @@
-
 library(mosaicData)
-
-
 library(mosaicMapShapes)
 
- lst<-data(package="mosaicMapShapes")$results[,"Item"]
-# lst1 <- grepl("_data",lst)
-# data_lst <- list()
-# data_lst <- as.list(lst[lst1])
-# lst2 <- grepl("_shapes",lst)
-# shapes_lst <- as.list(lst[lst2])
 
-#
-# tmp<-grep("_data",lst)
-# data_lst<-lst[tmp]
-# tmp<-grep("_shapes",lst)
-# shapes_lst<-lst[tmp]
-#
-# lst1<- gsub("\(\w+\_shapefile\)", "", data_lst)
+`%then%` <- shiny:::`%OR%`
 
- lst<- list_shapefiles()$name
-  data_lst <- paste0(lst,"_data")
-  shapes_lst <- paste0(lst,"_shapes")
 
+lst <- mosaicMapShapes::list_shapefiles()$name
+data_lst <- paste0(lst,"_data")           #provide choices for input$data_source
+shapes_lst <- paste0(lst,"_shapes")    #provide choices for input$ent_data_to_join & input$pos_data_to_join
 
 
 geom_aesthetics <- list(
@@ -35,3 +20,5 @@ geom_aesthetics <- list(
   )
 
 )
+
+
