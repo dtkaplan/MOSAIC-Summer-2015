@@ -4,9 +4,85 @@ author: "Mengdie"
 date: "6/16/2015"
 output: html_document
 ---
-#library(DCF)   #DCF not available for R.3.02
+
+
+
+
+#validation error style
+#add link to further reference page "http://sape.inf.usi.ch/quick-reference/ggplot2/alpha"
+
 # The difference between aes and aes_string
+# Initialization problem for both ggplot and ggmap (No layers in the plot)
+
 # Write a function that could scrape the shape file from the website and fortify the shape file and pass to user
+
+```{r}
+#Antarctica & North_American_rivers_10m_shapes not found
+
+#datasets <- as.list(data(package="mosaicData")$results[,"Item"])
+#     data_name <- input$data_source
+#     do.call(data, list(data_name, package="mosaicData") )
+#     data_lst <<- eval(parse(text=data_name))
+
+```
+
+
+```{r}
+
+# way to check if two datasets can be joined
+if (!any(unique(input$data_source$id) %in% unique(input$ent_data_to_join$id)))
+  return (NULL)
+
+## way to get all data names from a library
+
+lst<- list_shapefiles()$name
+data_lst <- paste0(lst,"_data")   #provide choices for input$data_source
+shapes_lst <- paste0(lst,"_shapes") #provide choices for input$ent_data_to_join & input$pos_data_to_join
+
+####not working very well
+
+lst<-data(package="mosaicMapShapes")$results[,"Item"]  #return all the datanames in a package
+lst1 <- grepl("_data",lst)
+data_lst <- list()
+data_lst <- as.list(lst[lst1])
+lst2 <- grepl("_shapes",lst)
+shapes_lst <- as.list(lst[lst2])   #return a list of list
+
+l1<-as.list(lst[grepl("_data",lst)])
+
+
+tmp<-data(list = data_lst,package = "mosaicMapShapes") #return a list of character
+
+#######################
+tmp<-grep("_data",lst)
+tmp_lst1<-lst[tmp]
+tmp<-grep("_shapes",lst)
+tmp_lst2<-lst[tmp]  #return a list of characters
+
+```
+
+
+
+```{r}
+
+#`sport` and `sport.wgs84 originally contain same info (only long and lat), differ by gps system
+# sport.f <- ggplot2::fortify(sport, region = "ons_label")
+# sport.f <- left_join(sport.f, sport@data, by = c("id" = "ons_label"))
+
+
+# After merging with sport.wgs@data `sport.wgs84.f` contains info about participation
+sport <- rgdal::readOGR(dsn = "www/London", "london_sport")
+proj4string(sport) <- CRS("+init=epsg:27700")
+sport.wgs84 <- spTransform(sport, CRS("+init=epsg:4326"))   #shape file
+sport.wgs84.f <- fortify(sport.wgs84, region = "ons_label")
+sport.wgs84.f <- left_join(sport.wgs84.f, sport.wgs84@data, by = c("id" = "ons_label"))
+
+p <- ggmap(get_map(location = "london", zoom = 10, source = "google", maptype = "roadmap", crop=FALSE) )
+pp <- p + geom_polygon(data = sport.wgs84.f, aes_string(x="long", y="lat",group = "group",fill = "Partic_Per"))
+# ppp<-p + geom_path(data = sport.wgs84.f, aes_string(x="long", y="lat",group = "group",fill = "Partic_Per.x"), size = 1, color = "blue")
+
+
+```
 
 ```{r}
 ours <- CountryData %>% select(id=country, fert)  
