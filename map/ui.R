@@ -82,6 +82,9 @@ position <- tabPanel("Position Data",
                           plotOutput("positionOutput"))
 )
 
+help <- tabPanel('Help', 
+                 uiOutput("rmd"))
+
 shinyUI(
   navbarPage( "ProjectMosaic!",
               theme = shinytheme("cerulean"),
@@ -90,7 +93,8 @@ shinyUI(
                        tile,
                        shape,
                        position,
-                       entity
+                       entity,
+                       help
 
                        )
 
