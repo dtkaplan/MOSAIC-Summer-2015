@@ -9,15 +9,19 @@ datasets <- list( Galton = mosaicData::Galton, Heightweight = mosaicData::Height
 
 
 geom_aesthetics <- list(
-  geom_line  = list(x="any", y="any", 
-                    color = "few", size="num_or_few", type="few",
-                    group = "few"),
-  geom_point = list(x="any", y="any", 
-                    color="num_or_few", size ="num_or_few", alpha="num_or_few"),
-  geom_bar   = list(x="any", y= "any",color = "few", position = "bar_positions"),
-  geom_blank = list(x="any", y="any"),
-  geom_map = list(map = "data with long and lat", map_id = "any", color = "any", fill = "few", linetype = "few", size = "num_or_few", alpha="num_or_few"
-                 )
+  geom_line  = list(x = "any", y = "any", color = "few", alpha = "num",
+                    size = "num_or_few", linetype = "few"),
+  geom_point = list(x = "any", y = "any", color = "num_or_few", size = "num_or_few", 
+                    alpha = "num_or_few", fill = "few", shape = "few"),
+  geom_bar   = list(x = "any", color = "few", alpha = "num_or_few", fill = "few",
+                    linetype = "few", size ="num_or_few", weight = "num_or_few"),
+  geom_hline = list(x = "any", y = "any", alpha = "num_or_few", color = "num_or_few",
+                    linetype = "few",size = "num_or_few", yintercept = "any"),
+  geom_vline = list(x = "any", y = "any", alpha = "num_or_few", color = "num_or_few",
+                    linetype = "few",size = "num_or_few"),
+  geom_abline = list(x = "any", y = "any", alpha = "num_or_few", color = "num_or_few",
+                    linetype = "few",size = "num_or_few"),
+  geom_blank = list(x="any", y="any")
 )
 
 # Storage for the frame
