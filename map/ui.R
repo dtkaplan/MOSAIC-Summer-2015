@@ -3,6 +3,7 @@ library(ggplot2)
 library(dplyr)
 library(shinythemes)
 library(mosaicMapShapes)
+library(ggmap)
 
 tile <- tabPanel("Tile",
                  column(4,

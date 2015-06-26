@@ -1,9 +1,20 @@
 # Name aesthetics for each geom type:
 
-library(mosaicData)
+
+library(mosaicMapShapes)
 
 # Available datasets
 # CHANGE THIS logic to pull from any of a list of packages.
+
+
+data1 <- list (names(list_shapefiles()))  #_shape
+data2 <- list ("China Pop" = China@data, "London Sports" = sport.wgs84@data)  #_data
+
+tmp<-list_shapefiles()[,1]
+
+
+
+
 
 
 geom_aesthetics <- list(
@@ -15,7 +26,7 @@ geom_aesthetics <- list(
 )
 
 # Storage for the frame
-# These need to be set by 
+# These need to be set by
 frame_def <<- reactiveValues(
   data = NULL,
   data_name = "",
@@ -31,9 +42,9 @@ layer_n_values <<- function(n){
     layer = n,
     data = NULL,
     geom = "geom_text",
-    aes = data.frame(aes=c("x","y"), 
-                     value=c("x","y"), 
-                     role=rep("variable",2), 
+    aes = data.frame(aes=c("x","y"),
+                     value=c("x","y"),
+                     role=rep("variable",2),
                      stringsAsFactors=FALSE)
   )
 }
@@ -42,8 +53,8 @@ layer_n_values <<- function(n){
 
 # Turn the layer values into something suited to do.call() in making plot.
 make_geom_argument_list <- function(values) {
-  
-  mapping_inds <- 
+
+  mapping_inds <-
     which(values$role == "variable")
   setting_inds <-
     which(values$role == "constant")
@@ -58,7 +69,7 @@ make_geom_argument_list <- function(values) {
   names(set_list) <- values$aes[setting_inds]
   res <- list(mapping = do.call(aes_string, map_list))
   res <- c(res, set_list)
-  
+
   res
 }
 

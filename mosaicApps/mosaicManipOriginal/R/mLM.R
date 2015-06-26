@@ -1,5 +1,5 @@
 mLM <- function(formula, data=NULL, ...) {
-	if( !require(manipulate) ) 
+	if( !require(manipulate) )
 		stop("Must use a manipulate-compatible version of R, e.g. RStudio")
 	mod <- lm( formula, data=data, ...)
 	response.name <- deparse(mod$terms[[2L]])
@@ -31,10 +31,10 @@ mLM <- function(formula, data=NULL, ...) {
 		if ( sum(keep.columns)==0  ) {
 			yscale <- range(c(response,0)) #include 0 in the scale
 			newvals <- 0*response
-		} 
+		}
 		else {
 			newmat <- mat[,keep.columns]
-			if (!is.matrix(newmat) ) newmat <- cbind(newmat) 
+			if (!is.matrix(newmat) ) newmat <- cbind(newmat)
 			# make sure it's a matrix.
 			#eliminate redundant columns
 			qq <- qr(newmat)
@@ -46,7 +46,7 @@ mLM <- function(formula, data=NULL, ...) {
 		if( is.factor( xvar ) ){
 			xxvar <- jitter(as.numeric(xvar) )
 			# DO THE PLOT labeling the x-axis with the levels of the factor
-			plot( xxvar, newvals,pch=20,
+			plot(xxvar, newvals,pch=20,
 				 ylab=response.name,xlab=xname, col="black",xaxt="n",ylim=yscale)
 			axis(1, at= 1:length(levels(xvar)), labels=levels(xvar) )
 		}
