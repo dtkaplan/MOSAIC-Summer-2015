@@ -90,16 +90,7 @@ shinyUI(
               theme = shinytheme("cerulean"),
               tabPanel("Have fun with the maps",
                        tabsetPanel(
-<<<<<<< HEAD
-                       tile,
-                       shape,
-                       position,
-                       entity,
-                       help
-
-                       )
-=======
-                         tile,
+            tile,
                          shape,
                          entity,
                          position
@@ -111,7 +102,7 @@ shinyUI(
                                         font-weight: 500;
                                          }
                                          ")))
->>>>>>> 14cbbe8ee69e777f5c0169761efe290125c827ef
+
 
               )
   )

@@ -18,7 +18,7 @@ shinyUI(fluidPage(
                                   "Plot the errors")),
 
       sliderInput("position", label = h5("Position:"),
-                  min = -5, max = 5, , step = 0.1, value = 0),
+                  min = -5, max = 5, step = 0.1, value = 0),
 
       numericInput("order", 
                    label = h5("Order of the polynomial"), value = 0,
