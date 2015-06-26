@@ -13,17 +13,18 @@ shinyServer(
     
     output$graph <- renderPlot({
       #browser()
-      expr <<- input$expression
+      expr <- input$expression
       
-      checks <<- input$checks
+      checks <- input$checks
       
-      num <<- input$n
+      num <- input$n
       
       origMod <<- lm(expr, data1) 
       origCoefs <<- coef(origMod)
       
-      #yvar=as.character(expr[2])
-      yvar <<- substring(expr,1,4)
+      formula <- as.formula(input$expression) 
+      yvar <<- as.character(formula[2])
+      
       xvars.mod <<- attr(origMod$terms, "term.labels")   #xvars from original model
       
       xvars.data <<- names(data1)
