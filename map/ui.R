@@ -91,10 +91,11 @@ shinyUI(
               theme = shinytheme("cerulean"),
               tabPanel("Have fun with the maps",
                        tabsetPanel(
-            tile,
+                         tile,
                          shape,
                          entity,
-                         position
+                         position,
+                         help
                        ),
                        tags$head( #add CSS style to error messages
                          tags$style(HTML("
@@ -103,11 +104,11 @@ shinyUI(
                                         font-weight: 500;
                                          }
                                          ")))
-
-
+                       
+                       
               )
   )
-
+  
 )
 
 
