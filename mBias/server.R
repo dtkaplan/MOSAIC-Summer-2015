@@ -14,7 +14,9 @@ shinyServer(
     output$graph <- renderPlot({
       #browser()
       expr <<- input$expression
+      
       checks <<- input$checks
+      
       num <<- input$n
       
       origMod <<- lm(expr, data1) 
@@ -33,7 +35,8 @@ shinyServer(
       args$seed <- input$seed
       args$signif <- input$signif
       args$use.orig <- input$use.orig
-      args$checks <- ifelse(!is.null(input$checks), input$checks, character(0))
+      args$checks <- if (!is.null(input$checks)) input$checks else character(0)
+        #ifelse(!is.null(input$checks), input$checks, character(0))
       
       do.call(myFun, args)
     })})
