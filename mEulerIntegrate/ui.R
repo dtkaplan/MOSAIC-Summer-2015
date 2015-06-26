@@ -3,15 +3,16 @@ library(shiny)
 shinyUI(fluidPage(
   titlePanel("Euler Integration Method"),
   
-  p("XXX"),
+  p("An applet which allows the user to explore the Euler method for numerical integration of ordinary differential equations "),
   
   sidebarLayout(position = "right",
                 
                 sidebarPanel( 
+              
                   
-                  selectInput("dynfun", label = h4("Dynamics"), choices = list("linear" = 1 ,"logistic" = 2 ,
-                                                                                "Newton Cooling" = 3,"cows" = 4,"pills" = 5,"Gompertz" = 6),
-                              selected = "1"),
+                  selectInput("dynfun", label = h4("Dynamics"), choices = list("linear","logistic",
+                                                                               "Newton Cooling","cows","pills" ,"Gompertz"),
+                              selected = "linear"),
                   
                   br(),
                   
@@ -20,7 +21,7 @@ shinyUI(fluidPage(
                   br(), 
                   
                   sliderInput("dt", label = h4("Euler Stepsize: dt"),
-                              min = 0.05, max = 10, step = 0.05, value = 0.5),
+                              min = 0.05, max = 10, step = 0.05, value = 1),
                   
                   br(),
                   
@@ -37,7 +38,7 @@ shinyUI(fluidPage(
                   
                   br(),
                   
-                  selectInput("ntraj", label = h4("Active Trajectory"), choices = list("red" = 1, "blue" = 2, "black" = 3)),
+                  selectInput("ntraj", label = h4("Active Trajectory"), choices = list("red" = 1, "blue" = 2, "black" = 3), selected = 1),
                   
                   br(),
                   
@@ -59,16 +60,3 @@ shinyUI(fluidPage(
   )
   
   ))
-
-# manipulate(draw.state(dynfunname=dynfun,xval0=xval0,dt=dt,ntraj=ntraj,go=go,restart=restart,nsteps=nsteps,showequilibria=showeq,editfun=editfun),
-#            dynfun=picker("linear","logistic","Newton Cooling","cows","pills","Gompertz",label="Dynamics",initial="logistic"), 
-#            go = button("GO!"),
-#            dt = slider(0.05,10.0,step=0.05,init=0.5,label="Euler Stepsize: dt"),
-#            nsteps=slider(1,20,init=1,label="Number of Euler steps to take"),
-#            xval0 = slider(-.5,3.5,step=0.01,init=.5,label="Initial value: x0"),
-#            showeq = checkbox("Show Equilibria",initial=FALSE),
-#            ntraj = picker("red"=1,"blue"=2,"black"=3, label="Active Trajectory"),
-#            restart=button(label="Start Over"),
-#            editfun = button( label="Edit the Dynamical Function")
-# )
-
