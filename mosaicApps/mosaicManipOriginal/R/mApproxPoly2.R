@@ -39,7 +39,8 @@ mApproxPoly2 = function(expr, ..., xlim = c(0,1), ylim = c(0,1)){
   if (!require("mosaic")) stop("Must install mosaic package.")
 
   vals = list(...) 
-  fun = mosaic:::.createMathFun(sexpr = substitute(expr), ...)
+  #fun = mosaic:::.createMathFun(sexpr = substitute(expr), ...)
+  fun=mosaic::makeFun(expr)
   ylab = fun$names[2]
   xlab = fun$names[1]
   xlim2 = xlim

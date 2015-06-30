@@ -164,6 +164,10 @@ shinyServer(function(input, output, session) {
     }
     p
   })
-
+  
+#==========================================================================  
+output$rmd <- renderUI({
+  includeMarkdown(rmarkdown::render("~/MOSAIC-Summer-2015/Test.rmd"))
+})
 
 })

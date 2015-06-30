@@ -32,8 +32,8 @@
 #' @examples
 #' 
 #' if(require(manipulate)) {
-#' data(CPS)
-#' mBias(wage~sex+educ+exper, data=CPS)
+#' data(CPS85)
+#' mBias(wage~sex+educ+exper, data=CPS85)
 #' }
 #' 
 mBias=function(expr, data){
