@@ -35,6 +35,9 @@
 #' 		mGrad(cos(x)*sin(y)*y~x&y)
 #' 	}
 #' 
+#'
+#' 
+#' '.createMathFun' not found 
 mGrad = function(expr, ..., xlim = c(0,10), ylim = c(0,10)){
   if( !require(manipulate) ) 
 	  stop("Must use a manipulate-compatible version of R, e.g. RStudio")

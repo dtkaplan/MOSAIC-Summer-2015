@@ -12,7 +12,9 @@ library(grid)
 #           })
 
 trajectory <<- reactiveValues(
-  one = list(x = 0.5, t = 0) # see ui.r "xval0" for the initial value of x
+  one = list(x = 0.5, t = 0), # see ui.r "xval0" for the initial value of x
+  two = list(x = 0.5, t = 0),
+  three = list(x = 0.5, t = 0)
 ) # this was "foo" in Andrew Rich's original manipulate program
 
 
@@ -48,6 +50,24 @@ shinyServer(
     })
 
     
+    # ======================================
+    
+    observeEvent(input$ntraj, {
+      #browser()
+      if(input$ntraj == "1"){
+        traj_now <<- trajectory$one
+      }
+      if(input$ntraj == "2"){
+        traj_now <<- trajectory$two
+      }
+      if(input$ntraj == "1"){
+        traj_now <<- trajectory$three
+      }
+      
+    })
+    
+    
+    
     # =======================================
     # Calculates nstep more points in the trajectory
     observeEvent(input$go, {
@@ -55,9 +75,9 @@ shinyServer(
       dynfun <- dyn_fun()
       dt <- isolate(input$dt)
       for (k in 1:isolate(input$nsteps) ) {
-        npts = length(trajectory$one$x)
-        trajectory$one$t[npts+1] <<- trajectory$one$t[npts] + dt
-        trajectory$one$x[npts+1] <<- trajectory$one$x[npts] + dt*dynfun(trajectory$one$x[npts],trajectory$one$t[npts])
+        npts = length(traj_now$x)
+        traj_now$t[npts+1] <<- traj_now$t[npts] + dt
+        traj_now$x[npts+1] <<- traj_now$x[npts] + dt*dynfun(traj_now$x[npts],traj_now$t[npts])
       }
     })
     
@@ -80,24 +100,24 @@ shinyServer(
     #================================
     draw.state <- reactive({
       #browser()
-      npts = length(trajectory$one$x)
+      npts = length(traj_now$x)
       dynfun <- dyn_fun()
       #Figure out the time and x-scale
       tmin = 0
-      tmax = pmax(10, max(1.2*trajectory$one$t + input$dt*input$nsteps))
-      xmax = pmax(1.2, max(1.2*trajectory$one$x) )
-      xmin = pmin(0, min(trajectory$one$x))
+      tmax = pmax(10, max(1.2*traj_now$t + input$dt*input$nsteps))
+      xmax = pmax(1.2, max(1.2*traj_now$x) )
+      xmin = pmin(0, min(traj_now$x))
       # make the min of the frame a little bit below the trajectory
       xmin <- xmin - 0.1*(xmax-xmin)
 
-      p <- ggplot(data = as.data.frame(trajectory$one), aes(x=t, y=x)) + ylab("State x") + xlab("Time t") + geom_point() + geom_line() + xlim(tmin,tmax) +
+      p <- ggplot(data = as.data.frame(traj_now), aes(x=t, y=x)) + ylab("State x") + xlab("Time t") + geom_point() + geom_line() + xlim(tmin,tmax) +
         ylim(xmin,xmax)
     
       # draw the integration line (the black line showing which way the next step will go)
       if( npts > 1 ) { # There is a trajectory
-        slope = dynfun(trajectory$one$x[npts-1],trajectory$one$t[npts-1])
-        p <- p + geom_segment(x = trajectory$one$t[npts-1] - 3, xend = trajectory$one$t[npts-1] + 3 , 
-                              y = trajectory$one$x[npts-1] - 3*slope , yend = trajectory$one$x[npts-1] + 3*slope, col = "red")
+        slope = dynfun(traj_now$x[npts-1],traj_now$t[npts-1])
+        p <- p + geom_segment(x = traj_now$t[npts-1] - 3, xend = traj_now$t[npts-1] + 3 , 
+                              y = traj_now$x[npts-1] - 3*slope , yend = traj_now$x[npts-1] + 3*slope, col = "black")
       }
       
 

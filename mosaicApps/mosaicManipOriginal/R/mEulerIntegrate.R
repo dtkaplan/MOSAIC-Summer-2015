@@ -35,7 +35,7 @@ mEulerIntegrate <- function() {
       if( dynfunname=="Gompertz") gompertz <<- edit(gompertz)
       if( dynfunname=="Newton Cooling") cooling <<- edit(cooling)
       if( dynfunname=="cows") cows <<- edit(cows)
-      if( dynfunname=="pills") cows <<- edit(pills)
+      if( dynfunname=="pills") pills <<- edit(pills)
     }
     if( dynfunname=="linear" ) dynfun = exponential
     if( dynfunname=="logistic") dynfun = logistic
@@ -45,6 +45,8 @@ mEulerIntegrate <- function() {
     if( dynfunname=="pills") dynfun = pills
     
     # Update the current traj
+
+    
     foo = trajs[[ntraj]]
     if( is.null(foo) || restart || xval0 != foo$x[1]) {
       foo = list(x=xval0,t=0)
@@ -56,6 +58,8 @@ mEulerIntegrate <- function() {
         foo$x[npts+1] = foo$x[npts] + dt*dynfun(foo$x[npts],foo$t[npts])
       }
     }
+    
+    #browser()
     trajs[[ntraj]] <<- foo # put it back into the general storage
     #Figure out the time and x-scale
     tmin = 0
@@ -74,7 +78,7 @@ mEulerIntegrate <- function() {
           xlim=c(0,tmax),
           ylab="State x",xlab="Time t")
    
-    # draw the integration line
+    # draw the integration line (the black line showing which way the next step will go)
     npts = length( foo$x )
     if( npts > 1 ) { # There is a trajectory
       slope = dynfun( foo$x[npts-1],foo$t[npts-1])

@@ -30,7 +30,7 @@
 #' @examples
 #' 
 #' if(require(manipulate)) {
-#' data(trees); fetchData(CPS)
+#' data(trees); fetchData(CPS85)
 #' mInfluence(Girth~Height, trees)
 #' mInfluence(wage~educ+exper+race+sex+age+sector, data=CPS)
 #' }

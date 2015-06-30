@@ -45,6 +45,8 @@ mFit = function(expr, data, instructor=rep(TRUE, 13), ...){
   
   line.red = rgb(1,0,0,.6)
   
+  #browser()
+  
   xvar = as.character(expr[3])
   yvar = as.character(expr[2])
   xvals = data[[xvar]]
@@ -76,6 +78,8 @@ mFit = function(expr, data, instructor=rep(TRUE, 13), ...){
 myPlot = function(k=k, n=n, P=P, mu1=mu1,mu2=mu2,mu3=mu3,mu4=mu4,mu5=mu5, 
                     sd=sd, a1=a1, a2=a2, a3=a3, a4=a4, a5=a5, a6=a6, a7=a7, a8=a8, 
                     a9=a9,a10=a10,a11=a11,a12=a12,a13=a13, ...){
+  
+  
   if(class(xvals)=="factor"){
     stop("Categorical explanatory variable in play! What do we do now? Treat it as numeric?")
     }
@@ -87,6 +91,7 @@ myPlot = function(k=k, n=n, P=P, mu1=mu1,mu2=mu2,mu3=mu3,mu4=mu4,mu5=mu5,
   f[[11]] = function(x, mu, sd, ...) pnorm(q = x, mean = mu5, sd = sd)
   
   .makeA = function(xx) {
+    browser()
      A = matrix(0,nrow=length(xx),ncol = sum(funchoice[1:11])) 
      # get rid of columns potentially for 7 and 8.  They are made with cbind()
      col.count = 1
@@ -110,6 +115,8 @@ myPlot = function(k=k, n=n, P=P, mu1=mu1,mu2=mu2,mu3=mu3,mu4=mu4,mu5=mu5,
      funchoice = c(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, 
                  a11, a12, a13)
   
+     # browser()
+     
    if( sum(funchoice)==0) {
      print("You must select at least one function to fit a curve!")
      bigy = 0*x
@@ -125,6 +132,8 @@ myPlot = function(k=k, n=n, P=P, mu1=mu1,mu2=mu2,mu3=mu3,mu4=mu4,mu5=mu5,
   
   bigx=x #Avoid conflicting variable names
     mypanel = function(x, y){
+      
+      browser()
       panel.xyplot(x, y, pch = 16)
       panel.xyplot(bigx, bigy, type = "l", col=line.red, lwd = 5)
 #       grid.text(paste("RMS Error: ", signif(RMS, 3)), 
@@ -132,9 +141,11 @@ myPlot = function(k=k, n=n, P=P, mu1=mu1,mu2=mu2,mu3=mu3,mu4=mu4,mu5=mu5,
 #                 y = unit(1, "npc")-unit(2, "mm"),
 #                 just = "left",
 #                 gp = gpar(col = "red", fontsize =10))
-      }
+    }
+    
   #PLOTTING F'REAL
       
+    browser()
      xyplot(yvals~xvals, data, xlab = xvar, ylab = yvar, panel = mypanel, 
             main = paste("RMS Error:", signif(RMS, 3)))
 

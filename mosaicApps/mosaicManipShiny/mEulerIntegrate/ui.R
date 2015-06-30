@@ -38,7 +38,7 @@ shinyUI(fluidPage(
                   
                   br(),
                   
-                  selectInput("ntraj", label = h4("Active Trajectory"), choices = list("red" = 1, "blue" = 2, "black" = 3), selected = 1),
+                  selectInput("ntraj", label = h4("Active Trajectory"), choices = list("red" = 1, "blue" = 2, "green" = 3), selected = 1),
                   
                   br(),
                   
