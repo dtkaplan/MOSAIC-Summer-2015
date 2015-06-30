@@ -1,5 +1,6 @@
 library(shiny)
 library(mosaic)
+library(mosaicData)
 library(lattice)
 library(grid)
 library(mosaicData)

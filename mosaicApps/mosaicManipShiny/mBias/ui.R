@@ -1,5 +1,5 @@
 library(shiny)
-
+library(mosaicData)
 
 data1 <<- get("CPS85")
 
