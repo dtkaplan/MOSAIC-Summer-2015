@@ -13,17 +13,17 @@ shinyServer(
       
       args <- list()
       args$trans <- switch(input$trans, 
-                     "None"   = c,
-                     "Log"    = log,
-                     "Sqrt"   = sqrt,
-                     "Rank"   = rank,
-                     "arcCos" = acos)
+                           "None"   = c,
+                           "Log"    = log,
+                           "Sqrt"   = sqrt,
+                           "Rank"   = rank,
+                           "arcCos" = acos)
       
       args$bandwidth  <- input$band
       args$dist       <- input$dist
       args$seed       <- input$seed
       args$npts       <- input$points
-        
+      
       do.call(myFun, args)
     })
     

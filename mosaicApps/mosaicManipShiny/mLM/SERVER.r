@@ -13,8 +13,6 @@
           return (NULL)
         }
         
- 
-        
         xname <- input$var_choices
         vec <<- c(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13,a14,a15,a16,a17,a18,a19,a20)
         formula <- as.formula(input$expr)
@@ -38,8 +36,7 @@
         
         yscale <- range(response)
         yscale <- yscale - diff(yscale)*(c(-1,1)*.05)
-        #
-  
+
         n <- length(term.labels)
         keep.columns <- col.to.term %in% keep.vector[ vec[1:n] ]
         if ( sum(keep.columns)==0  ) {
@@ -78,10 +75,8 @@
         
       })
       
-      
       observeEvent(input$data,{
         # numeric_var <- only
-        
         updateSelectInput(session, inputId = "var_choices", choices = names(datasets[[input$data]]), selected = NULL)
       })
       
