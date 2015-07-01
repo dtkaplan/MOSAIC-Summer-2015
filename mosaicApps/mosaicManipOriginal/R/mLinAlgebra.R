@@ -1,3 +1,5 @@
+# not clear what target should be  
+
 mLinAlgebra <- function(...,A=NULL,b=NULL, target=b) {
 	if( !require(manipulate) ) 
 		stop("Must use a manipulate-compatible version of R, e.g. RStudio")

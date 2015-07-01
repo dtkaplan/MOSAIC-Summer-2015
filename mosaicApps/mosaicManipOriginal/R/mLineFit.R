@@ -18,7 +18,7 @@
 #' @examples
 #' 
 #' \dontrun{
-#' kids = fetchData("kidsfeet.csv")
+#' kids <- library(mosaicData:KidsFeet)
 #' mLineFit( length ~ width, data=kids )
 #' }
 
