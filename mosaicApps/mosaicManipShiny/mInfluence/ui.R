@@ -26,9 +26,3 @@ parameters manually."),
   )
 
 )
-
-# 
-# xpick=picker(xvar, label="Predictor to plot"),
-# newPoint=checkbox(FALSE, label="Add new point"),
-# multX=slider(-5, 5, initial=1, label="New predictor (measured in SDs)"),
-# multY=slider(-5, 5, initial=1, label="New response (measured in SDs)")

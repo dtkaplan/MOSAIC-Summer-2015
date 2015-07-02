@@ -3,4 +3,4 @@ if( !require(manipulate) )
 
 datasets <- list("Galton" = Galton, "KidsFeet" = KidsFeet)
 
-#====================
+

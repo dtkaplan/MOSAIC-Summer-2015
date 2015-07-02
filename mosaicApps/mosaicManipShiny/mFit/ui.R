@@ -51,10 +51,26 @@ shinyUI(fluidPage(
                 #                 
                 sidebarPanel(
                   selectInput("data", "Please selet a dataset", choices = list("Galton", "KidsFeet")),
-                  # selectInput("var_choices", "These are the variables available to model"),
                   textInput("expr", "Please enter the expression for model"),
                   checkboxGroupInput("checkbox", label = "Please select the function that you want to fit with", choices = choices),
-                  actionButton("plot", label = "Make a plot")
+                  actionButton("plot", label = "Make a plot"),
+                  sliderInput("k", label = h5("k"),
+                              min = -2, max = 2, step = .05, value = 0.1),
+                  
+                  sliderInput("P", label = h5("P"),
+                              min = .1, max = 10, step = .01, value = 5),
+                  
+                  sliderInput("n", label = h5("n"),
+                              min = 1, max = 20, step = 1, value = 1), 
+                  
+                  lapply(1:5, function(i) {
+                    sliderInput(paste0('mu', i), paste0('mu', i),
+                                min = 20, max = 30, step =.1, value = 25)
+                  }),
+                  
+                  sliderInput("sd", label = h5("sd"),
+                              min = 0.1, max = 3, step = .1, value = 0.5)
+                )
                 ),
                 
                 
@@ -63,4 +79,4 @@ shinyUI(fluidPage(
                 )
   )
   
-))
+)

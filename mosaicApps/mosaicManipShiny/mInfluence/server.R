@@ -18,7 +18,6 @@ shinyServer(
       xpick <- input$xpick 
       multX <- input$multX 
       multY <- input$multY
-      # newPoint <- input$newPoint
       groups <- NULL
       
       dots <- list()
@@ -112,14 +111,6 @@ shinyServer(
       
       myFun()
       
-#       args <- list()
-#       args$xpick <- input$xpick
-#       args$multY  <- input$multY
-#       args$multX      <- input$multX
-#       args$newPoint       <- input$newPoint
-#       args$groups       <- NULL
-#       
-#       do.call(myFun, args)
     })
     
     observeEvent(input$data,{
@@ -131,10 +122,3 @@ shinyServer(
   }
 )
 
-
-
-
-
-# 
-# manipulate(myFun(xpick=xpick, multY=multY, multX=multX, newPoint=newPoint, groups=groups, ...), 
-#            controls)
