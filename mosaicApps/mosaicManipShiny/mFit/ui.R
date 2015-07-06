@@ -38,20 +38,10 @@ shinyUI(fluidPage(
    parameters manually."),
   
   sidebarLayout(position = "right",
-                # 
-                #     labels=list("Constant", "x", "x^2", "x^3", "log(x)", "exp(kx)", 
-                #                 "pnorm1(mu1, sd)", "pnorm2(mu2, sd)",
-                #                 "pnorm3(mu3, sd)","pnorm4(mu4, sd)","pnorm5(mu5, sd)",
-                #                 "sin(2Pi*x/P)", "cos(2Pi*x/P)"),
-                #     controls = list(a1 = checkbox(TRUE, as.character(labels[1]))),#const
-                #     
-                #     for (s in 2:length(instructor)){
-                #       if( instructor[s] ) controls[[paste("a",s,sep="")]] = checkbox(FALSE, as.character(labels[s]))
-                #     }                
-                #                 
                 sidebarPanel(
                   selectInput("data", "Please selet a dataset", choices = list("Galton", "KidsFeet")),
                   textInput("expr", "Please enter the expression for model"),
+                  actionButton("reset", "Reset mu and sd"),
                   checkboxGroupInput("checkbox", label = "Please select the function that you want to fit with", choices = choices),
                   actionButton("plot", label = "Make a plot"),
                   sliderInput("k", label = h5("k"),
@@ -65,18 +55,20 @@ shinyUI(fluidPage(
                   
                   lapply(1:5, function(i) {
                     sliderInput(paste0('mu', i), paste0('mu', i),
-                                min = 20, max = 30, step =.1, value = 25)
+                                min = 7.9, max = 9.8, step =.1, value = 8)
                   }),
                   
                   sliderInput("sd", label = h5("sd"),
                               min = 0.1, max = 3, step = .1, value = 0.5)
-                )
                 ),
                 
-                
-                mainPanel(
+                mainPanel (
                   plotOutput("graph")
                 )
+                
+                )
+                
+              
   )
   
 )

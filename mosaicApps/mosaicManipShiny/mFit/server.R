@@ -4,79 +4,95 @@ if( !require(manipulate)) stop("Must use a manipulate-compatible version of R, e
 if (!require("mosaic")) stop("Must install mosaic package.")
 
 shinyServer(
-  
   function(input,output,session){
   
-    .makeA <- function(xx) {
+     .makeA <- function(xx) {
       #browser()
-      
-      funchoice <- lst %in% fun_lst  #return a logical object
-      
-      A = matrix(0,nrow=length(xx),ncol = sum(funchoice[1:11])) 
-      # get rid of columns potentially for 7 and 8.  They are made with cbind()
-      col.count = 1
-      mu.count = 1
-      for (fun.k in which(funchoice)) {
-        if(fun.k %in% c(12,13)){
-          newA = f[[fun.k]](xx,P=P,n=n)
-          A = cbind(A,newA)
-          col.count=col.count+ncol(newA)
+      #Several changes made for this app:
+      #Turn funchoice from a vector of TRUE AND FALSE into a checkbox group, and create a new funchoice that returns a logical object
+       #indicating which functions have been selected
+     funchoice <- lst %in% fun_lst 
+     A = matrix(0,nrow=length(xx),ncol = sum(funchoice[1:11])) 
+     # get rid of columns potentially for 7 and 8.  They are made with cbind()
+     col.count = 1
+     mu.count = 1
+     for (fun.k in which(funchoice)) {
+       if(fun.k %in% c(12,13)){
+         newA = f[[fun.k]](xx, P=input$P, n=input$n)  #the function takes input from UI directly
+         A = cbind(A,newA)
+         col.count=col.count+ncol(newA)
+       }
+        if(fun.k %in% c(7,8,9,10,11)){
+#          A[,col.count] = f[[fun.k]](xx,input$paste0("mu",mu.count),input$sd) #the function doesn't take input from UI directly
+#          col.count = col.count+1
+#          mu.count = mu.count+1
+       if (fun.k == 7){
+         A[,col.count] = f[[fun.k]](xx,input$mu1,input$sd) #the function takes input from UI directly
+         col.count = col.count+1
+       }
+       if (fun.k == 8){
+         A[,col.count] = f[[fun.k]](xx,input$mu2,input$sd) #the function takes input from UI directly
+         col.count = col.count+1
+       }
+       if (fun.k == 9){
+         A[,col.count] = f[[fun.k]](xx,input$mu3,input$sd) #the function takes input from UI directly
+         col.count = col.count+1
+       }
+       if (fun.k == 10){
+         A[,col.count] = f[[fun.k]](xx,input$mu4,input$sd) #the function takes input from UI directly
+         col.count = col.count+1
+       }
+       if (fun.k == 11){
+         A[,col.count] = f[[fun.k]](xx,input$mu5,input$sd) #the function takes input from UI directly
+         col.count = col.count+1
+       }
         }
-        else{
-          A[,col.count] = f[[fun.k]](xx,k=k,P=P,mu=get(paste("mu",mu.count,sep="")),sd=sd,n=n)   
-          col.count = col.count+1
-          if(fun.k %in% 7:11) mu.count = mu.count+1   
-        }
-      } 
-      return(A)
-    }
-    
-# 
-#     reactFun <- reactiveValues(
-#       
-#       n <- input$n,
-#       p <- input$P,
-#       sd <- input$sd
-#       
-  
-#       f[[6]] = function(x, k, ...) exp(input$k*x),
-#       f[[7]] = function(x, mu, sd, ...) pnorm(q = x, mean = input$mu1, sd = input$sd),
-#       f[[8]] = function(x, mu, sd, ...) pnorm(q = x, mean = input$mu2, sd = input$sd),
-#       f[[9]] = function(x, mu, sd, ...) pnorm(q = x, mean = input$mu3, sd = input$sd),
-#       f[[10]] = function(x, mu, sd, ...) pnorm(q = x, mean = input$mu4, sd = input$sd),
-#       f[[11]] = function(x, mu, sd, ...) pnorm(q = x, mean = input$mu5, sd = input$sd),
-#       
-#       # The sines and cosines MUST go at the end since they are duplicated with a slider
-#       f[[12]] = function(x, P, n, ...){
-#         
-#         n <- input$n
-#         p <- input$P
-#         res = matrix(0,nrow=length(x),ncol=n)
-#         for(j in 1:n) {res[,j] = sin(2*j*pi*x/P)}
-#         return(res)
-#       }
-#       
-#       f[[13]] = function(x, P, n, ...){
-#         n <- input$n
-#         p <- input$P
-#         res = matrix(0,nrow=length(x),ncol=n)
-#         for(j in 1:n) {res[,j] = cos(2*j*pi*x/P)}
-#         return(res)
-#         }
-#    )
-    
-    
-    myPlot <- reactive({
-      
-      # browser()
-      line.red = rgb(1,0,0,.6)
-      data <- datasets[[input$data]]
-      expr <- as.formula(input$expr)
+       else{
+           A[,col.count] = f[[fun.k]](xx,k=input$k,P=input$P,mu=input$paste0("mu",mu.count),sd=input$sd,n=input$n) #the function takes input from UI directly
+           col.count = col.count+1
+           # if(fun.k %in% 7:11) mu.count = mu.count+1   
+       }
+     } 
+     return(A)
+     }
+     
+     vals <- reactiveValues(
+       data = NULL,
+       expr = NULL,
+       xvar = NULL,
+       xvals = NULL,
+       yvar = NULL,
+       yvals = NULL
+     )
+     
+     observeEvent(input$reset,{ 
+       
+       #reset button updates slider inputs for mu and sd
+       vals$data <<- datasets[[input$data]]
+       vals$expr <<- as.formula(input$expr)
+       vals$xvar <<- as.character(vals$expr[3])
+       vals$xvals <<- vals$data[[vals$xvar]]
+       vals$yvar <<- as.character(vals$expr[2])
+       vals$yvals <<- vals$data[[vals$yvar]]
+       
+       lapply(1:5, function(i) {
+         updateSliderInput(session, inputId = paste0('mu', i),
+                           value = min(vals$xvals)+i*diff(range(vals$xvals))/6, min = min(vals$xvals),max = max(vals$xvals))
+       })
+       updateSliderInput(session, inputId = sd, value = diff(range(vals$xvals))/4, min = 0.1, max = diff(range(vals$xvals))/2)
+       
+     })
+     
 
-      xvar = as.character(expr[3])
-      yvar = as.character(expr[2])
-      xvals = data[[xvar]]
-      yvals = data[[yvar]]
+     
+    myPlot <- reactive({
+ 
+      line.red = rgb(1,0,0,.6)
+      xvar = vals$xvar
+      yvar = vals$yvar
+      xvals = vals$xvals
+      data = vals$data
+      yvals = vals$yvals
   
       validate(need(xvals, "Please enter a valid expression"))
       
@@ -85,15 +101,8 @@ shinyServer(
       }
 
       x = seq(min(xvals),max(xvals), length = 1000)
-#       
-#       funchoice = c(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, 
-#                     a11, a12, a13)
-      
-      browser()
-
       lst <<- c(1,2,3,4,5,6,7,8,9,10,11,12,13)
       fun_lst <<- as.numeric(input$checkbox)
-      
       
       if( length(input$checkbox)==0) {
         print("You must select at least one function to fit a curve!")
@@ -110,8 +119,6 @@ shinyServer(
       
       bigx=x #Avoid conflicting variable names
       mypanel = function(x, y){
-        
-        #browser()
         panel.xyplot(x, y, pch = 16)
         panel.xyplot(bigx, bigy, type = "l", col=line.red, lwd = 5)
         #       grid.text(paste("RMS Error: ", signif(RMS, 3)), 
@@ -128,16 +135,22 @@ shinyServer(
              main = paste("RMS Error:", signif(RMS, 3)))
       
     })
+    
   
+    
+    
   output$graph <- renderPlot({
     
-    if(input$plot == 0){
+    if(input$plot == 0)
       return (NULL)
-    }
-      myPlot()
+
     
+      myPlot()
   })
-  
+    
+
   
 })
   
+
+
