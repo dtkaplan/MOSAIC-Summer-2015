@@ -1,6 +1,5 @@
 library(shiny)
 
-
 shinyUI(fluidPage(
   titlePanel("Gradient Search"),
   
@@ -26,7 +25,7 @@ shinyUI(fluidPage(
                   checkboxInput("contours", label = "Show Contours")),
                 
                 mainPanel(
-                  plotOutput("graph")
+                  plotOutput("graph", click ="user")
                 )
   )
   
