@@ -6,14 +6,13 @@ library(grid)
 library(mosaicData)
 source("helper.R", local = TRUE)
 
-
 data1 <<- get("CPS85")
 
 shinyServer(
   function(input, output, session) {
     
     output$graph <- renderPlot({
-      #browser()
+  
       expr <- input$expression
       
       checks <- input$checks
@@ -38,7 +37,12 @@ shinyServer(
       args$signif <- input$signif
       args$use.orig <- input$use.orig
       args$checks <- if (!is.null(input$checks)) input$checks else character(0)
-        #ifelse(!is.null(input$checks), input$checks, character(0))
+      #ifelse(!is.null(input$checks), input$checks, character(0))
       
-      do.call(myFun, args)
-    })})
+      if (is.null(input$checks)) {
+        return(NULL)
+      } 
+      else
+      {do.call(myFun, args)}
+    })
+  })
