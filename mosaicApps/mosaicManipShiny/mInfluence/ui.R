@@ -9,7 +9,7 @@ parameters manually."),
   sidebarLayout(
     position = "right",
     sidebarPanel(
-      selectInput("data", "Please selet a dataset", choices = list("Galton", "KidsFeet")), 
+      selectInput("data", "Please selet a dataset", choices = list("Galton", "KidsFeet", "Heightweight", "SwimRecords","TenMileRace")), 
       textInput("expr", "Please enter the expression for model"),
       selectInput("xpick", "Predictor to plot", choices = list(x = "x", y = "y")),
       checkboxInput("newPoint", "Add new point", value = FALSE),

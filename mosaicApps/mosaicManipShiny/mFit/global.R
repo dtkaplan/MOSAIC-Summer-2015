@@ -1,12 +1,11 @@
 library(mosaicData)
 
-datasets <- list("Galton" = Galton, "KidsFeet" = KidsFeet)
-
-choices <- list("Constant" = 1, "x" = 2, "x^2" = 3, "x^3" = 4, "log(x)" = 5, "exp(kx)" = 6, 
-                "pnorm1(mu1, sd)" = 7, "pnorm2(mu2, sd)" = 8,
-                "pnorm3(mu3, sd)" = 9,"pnorm4(mu4, sd)" = 10,"pnorm5(mu5, sd)" = 11,
+datasets <- list("Galton" = Galton, "KidsFeet" = KidsFeet,  "Heightweight" = Heightweight,
+                     "SwimRecords" = SwimRecords, "TenMileRace" = TenMileRace)
+choice_lst1 <- list("Constant" = 1, "x" = 2, "x^2" = 3, "x^3" = 4, "log(x)" = 5, "exp(kx)" = 6, 
                 "sin(2Pi*x/P)" = 12, "cos(2Pi*x/P)" = 13)
-
+choice_lst2 <- list( "pnorm1(mu1, sd)" = 7, "pnorm2(mu2, sd)" = 8,
+                 "pnorm3(mu3, sd)" = 9,"pnorm4(mu4, sd)" = 10,"pnorm5(mu5, sd)" = 11 )
 
 f = list()
 f[[1]] = function(x,...) rep.int(1, length(x))
@@ -33,15 +32,5 @@ f[[13]] = function(x, P, n, ...){
   for(j in 1:n) {res[,j] = cos(2*j*pi*x/P)}
    return(res)
 }
-
-
-# 
-# mu1=0; mu2=0;mu3=0; mu4=0; mu5=0;
-# a1=FALSE; a2=FALSE; a3=FALSE; a4 = FALSE; a5 = FALSE; a6 = FALSE; a7 = FALSE; a8 = FALSE; 
-# a9 = FALSE; a10 = FALSE; a11 = FALSE; a12=FALSE; a13 = FALSE; a14 = FALSE;
-# funchoice = c(a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, 
-#               a11, a12, a13)
-
-
 
 
