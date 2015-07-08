@@ -1,4 +1,8 @@
-datasets <- list("Galton" = Galton, "KidsFeet" = KidsFeet)
+
+library(mosaicData)
+
+datasets <- list("Galton" = Galton, "KidsFeet" = KidsFeet,  "Heightweight" = Heightweight,
+                 "SwimRecords" = SwimRecords, "TenMileRace" = TenMileRace)
 
 
 a1=TRUE;a2=TRUE;a3=TRUE;a4=TRUE;a5=TRUE;a6=TRUE;a7=TRUE;a8=TRUE;a9=TRUE;a10=TRUE
