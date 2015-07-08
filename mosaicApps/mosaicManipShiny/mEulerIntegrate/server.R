@@ -60,7 +60,7 @@ shinyServer(
       if(input$ntraj == "2"){
         traj_now <<- trajectory$two
       }
-      if(input$ntraj == "1"){
+      if(input$ntraj == "3"){
         traj_now <<- trajectory$three
       }
       

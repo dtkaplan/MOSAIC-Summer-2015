@@ -5,7 +5,6 @@ if (!require("mosaic")) stop("Must install mosaic package.")
 
 shinyServer(
   function(input,output,session){
-  
      .makeA <- function(xx) {
       #browser()
       #Several changes made for this app:
@@ -23,9 +22,6 @@ shinyServer(
          col.count=col.count+ncol(newA)
        }
         if(fun.k %in% c(7,8,9,10,11)){
-#          A[,col.count] = f[[fun.k]](xx,input$paste0("mu",mu.count),input$sd) #the function doesn't take input from UI directly
-#          col.count = col.count+1
-#          mu.count = mu.count+1
        if (fun.k == 7){
          A[,col.count] = f[[fun.k]](xx,input$mu1,input$sd) #the function takes input from UI directly
          col.count = col.count+1
@@ -65,57 +61,70 @@ shinyServer(
        yvals = NULL
      )
      
-     observeEvent(input$reset,{ 
-       
-       #reset button updates slider inputs for mu and sd
+     observeEvent(input$plot,{ 
+     # click plot to update reactive values
        vals$data <<- datasets[[input$data]]
+       validate(need(try(as.formula(input$expr)), label = "Valid Expression"))
        vals$expr <<- as.formula(input$expr)
        vals$xvar <<- as.character(vals$expr[3])
        vals$xvals <<- vals$data[[vals$xvar]]
        vals$yvar <<- as.character(vals$expr[2])
        vals$yvals <<- vals$data[[vals$yvar]]
        
+     })
+     
+     observeEvent(input$reset,{
+       #reset button updates slider inputs for mu and sd
+       validate(need(vals$xvals, "Please enter a valid expression"))
        lapply(1:5, function(i) {
          updateSliderInput(session, inputId = paste0('mu', i),
                            value = min(vals$xvals)+i*diff(range(vals$xvals))/6, min = min(vals$xvals),max = max(vals$xvals))
        })
        updateSliderInput(session, inputId = sd, value = diff(range(vals$xvals))/4, min = 0.1, max = diff(range(vals$xvals))/2)
-       
      })
      
-
-     
     myPlot <- reactive({
- 
+      #browser()
       line.red = rgb(1,0,0,.6)
       xvar = vals$xvar
       yvar = vals$yvar
       xvals = vals$xvals
       data = vals$data
       yvals = vals$yvals
-  
       validate(need(xvals, "Please enter a valid expression"))
-      
       if(class(xvals)=="factor"){
         stop("Categorical explanatory variable in play! What do we do now? Treat it as numeric?")
       }
-
       x = seq(min(xvals),max(xvals), length = 1000)
       lst <<- c(1,2,3,4,5,6,7,8,9,10,11,12,13)
-      fun_lst <<- as.numeric(input$checkbox)
+      fun_lst1 <<- as.numeric(input$checkbox1)
+      fun_lst2 <<- as.numeric(input$checkbox2)
       
-      if( length(input$checkbox)==0) {
-        print("You must select at least one function to fit a curve!")
-        bigy = 0*x
+      #create valid fun_lst
+      if (is.null(input$checkbox1)){
+        fun_lst <<- fun_lst2
       }
-      else{
+      if (is.null(input$checkbox2)){
+        fun_lst <<- fun_lst1
+      }
+      if (!is.null(input$checkbox1) && !is.null(input$checkbox2) ) {
+       fun_lst <<- c(fun_lst1,fun_lst2)
+     }
+      #validation error
+      error<- reactive({
+        if (is.null(input$checkbox1) && is.null(input$checkbox2)){
+          "You must select at least one function to fit a curve!"
+        }
+      })
+      validate(error())
+      
+      #call .makeA to make a matrix
         A = .makeA(xvals)
         bigA = .makeA(x)
         coefs = qr.solve(A, yvals)
         bigy = bigA %*% coefs
         predict.y = A %*% coefs
         RMS = abs(sqrt(mean((predict.y-yvals)^2))*diff(range(xvals)))
-      }
       
       bigx=x #Avoid conflicting variable names
       mypanel = function(x, y){
@@ -129,27 +138,18 @@ shinyServer(
       }
       
       #PLOTTING F'REAL
-      
-      #browser()
       xyplot(yvals~xvals, data, xlab = xvar, ylab = yvar, panel = mypanel, 
              main = paste("RMS Error:", signif(RMS, 3)))
       
     })
     
-  
-    
-    
   output$graph <- renderPlot({
-    
+    input$plot
     if(input$plot == 0)
       return (NULL)
-
-    
       myPlot()
   })
-    
 
-  
 })
   
 
