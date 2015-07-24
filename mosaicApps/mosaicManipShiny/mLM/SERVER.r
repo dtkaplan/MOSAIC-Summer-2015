@@ -1,22 +1,20 @@
+library(mosaicData)
+
   shinyServer(
     
     function(input,output,session){
       
       # graphics function  function(xname,vec)
       ffun <- reactive({
-        #browser()
-# 
-#         isolate({input$expr})
-#         isolate({input$var_choices}) isolate not working 
         
         if(input$plot == 0){
           return (NULL)
         }
         
-        xname <- input$var_choices
+        xname <- isolate(input$var_choices)
         vec <<- c(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13,a14,a15,a16,a17,a18,a19,a20)
-        formula <- as.formula(input$expr)
-        data <- datasets[[input$data]]
+        formula <- as.formula(isolate(input$expr))
+        data <- datasets[[isolate(input$data)]]
         
         mod <- lm( formula, data=data)
         response.name <- deparse(mod$terms[[2L]])   #reponse.name <- formula[2]
@@ -76,15 +74,11 @@
       })
       
       observeEvent(input$data,{
-        # numeric_var <- only
         updateSelectInput(session, inputId = "var_choices", choices = names(datasets[[input$data]]), selected = NULL)
       })
       
       
       output$graph <- renderPlot({
-        #browser()
-#         isolate({input$expr})
-#         isolate({input$var_choices})
         p <- ffun()
         
         p

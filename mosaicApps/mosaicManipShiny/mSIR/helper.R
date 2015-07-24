@@ -35,10 +35,3 @@ myFun <- reactive({
   return(data.frame(S=S, I=I, R=R, t=t))
   
 })
-
-
-# myFun <- function(probInfect, nContact, duration, initialI, births){
-#   dat <- sir()
-#   lattice::xyplot(S+I+R~t, data=dat, auto.key=list(points=FALSE, lines=TRUE, columns=3), lwd=lwd, type=type,
-#                   ...)
-# }

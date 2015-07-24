@@ -3,11 +3,15 @@ library(mosaic)
 library(lattice)
 library(grid)
 
+
 shinyServer(
   
   function(input, output, session) {
     
     showPlot <- reactive({
+      
+      if(input$plot == 0){
+        return (NULL)}
       
       #set up intial value
       #       showResids <- FALSE
@@ -17,13 +21,13 @@ shinyServer(
       # slopeRange <- sort(coef(mod)[2]*c(-1,1.5))
       # curSlope <- 1
       
-      data <- datasets[[input$data]]
-      formula <- as.formula(input$expr)
+      data <- datasets[[isolate(input$data)]]
+      formula <- as.formula(isolate(input$expr))
       mod <- lm(formula, data=data)
       bestSlope <- coef(mod)[2]
       
-      curSlope <- input$slope * bestSlope
-      curIntercept <- input$inter
+      curSlope <- isolate(input$slope) * bestSlope
+      curIntercept <- isolate(input$inter)
       # browser()
       
       mod <- lm(formula, data=data)
@@ -43,14 +47,14 @@ shinyServer(
             ylab=responseName,
             xlab=vecnames[independIndex],
             pch=20,col="blue")
-      
-      if( input$resids == TRUE ) {
+      # browser()
+      if(input$resids == TRUE && input$plot != 0) {
         for( k in 1:length(explanatory) ) {
           thisColor <- c("red","green","blue")[sign(response[k]-modelVals[k])+2]
           lines( c(0,0)+explanatory[k], c(response[k],modelVals[k]), col=thisColor)
         }
       }
-      if( input$squares == TRUE )  {
+      if(input$squares == TRUE && input$plot != 0)  {
         foo <- par("usr")
         goo <- par("pin")
         text(foo[1],foo[4]-.05*(foo[4]-foo[3]),paste("Sum Sq. Resids=",signif(sum((response-modelVals)^2),3)),pos=4)
@@ -59,7 +63,7 @@ shinyServer(
           hlength <- hscale*abs(response[k] - modelVals[k])
           polygon( explanatory[k]+c(0,0,hlength,hlength),
                    c(response[k],modelVals[k],modelVals[k],response[k]),
-                   col="lightblue", border=NA)
+                   col=rgb(204,255,255,120,maxColorValue = 255), border=NA)
         }
       } 
       
@@ -74,9 +78,10 @@ shinyServer(
     
     
     output$graph <- renderPlot({
+#       isolate(input$resids)
+#       isolate(input$squares)
       
-      if(input$plot == 0){
-        return (NULL)}
+ 
       showPlot()
 
     })

@@ -50,13 +50,3 @@ shinyUI(fluidPage(
   
 ))
 
-
-
-#     
-#     probInfect = slider(0, 1, step=.001, label="Probability of Infection", initial=.1),
-#     nContact = slider(0, 100, step=1, label="Contacts per day", initial=10),
-#     duration = slider(.01, 1, step=.001, label="Duration of disease decay", initial=.2),
-#     initialI = slider(1, 50, step=1, label="Initial Infected", initial=1),
-#     births = slider(0, 20, step=1, label="Births/day", initial=0)
-
-
