@@ -25,7 +25,8 @@ shinyUI(fluidPage(
                   checkboxInput("contours", label = "Show Contours")),
                 
                 mainPanel(
-                  plotOutput("graph", click ="user")
+                  plotOutput("graph", click ="user"),
+                  p("Authors: Daniel Kaplan, Andrew Rich, Mengdie Wang & Jingjing Yang")
                 )
   )
   

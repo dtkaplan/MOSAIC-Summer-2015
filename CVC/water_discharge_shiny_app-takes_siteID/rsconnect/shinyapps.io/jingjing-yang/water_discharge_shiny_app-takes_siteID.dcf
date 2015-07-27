@@ -1,0 +1,9 @@
+name: water_discharge_shiny_app-takes_siteID
+account: jingjing-yang
+server: shinyapps.io
+bundleId: 227064
+url:
+        https://jingjing-yang.shinyapps.io/water_discharge_shiny_app-takes_siteID
+when: 1438013653.08307
+asMultiple: FALSE
+asStatic: FALSE

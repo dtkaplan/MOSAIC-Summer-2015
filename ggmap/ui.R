@@ -83,8 +83,10 @@ position <- tabPanel("Position Data",
                             plotOutput("positionOutput"))
 )
 
-help <- tabPanel('Help', 
-                 uiOutput("rmd"))
+# help <- tabPanel('Help', 
+#                  uiOutput("rmd"))
+
+about <- tabPanel("About", p("Authors: Daniel Kaplan, Mengdie Wang & Jingjing Yang"))
 
 shinyUI(
   navbarPage( "ProjectMosaic!",
@@ -95,7 +97,8 @@ shinyUI(
                          shape,
                          entity,
                          position,
-                         help
+                         about
+                         # ,help
                        ),
                        tags$head( #add CSS style to error messages
                          tags$style(HTML("
@@ -107,6 +110,7 @@ shinyUI(
                        
                        
               )
+              
   )
   
 )
